@@ -2,9 +2,9 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from decimal import Decimal
 from apps.website_settings.models import WebsiteSettings
-from apps.destinations.models import Region, Destination, DestinationImage
-from apps.packages.models import TourPackage
-from apps.itineraries.models import Itinerary, ItineraryDay
+from apps.languages.models import Language
+from apps.vehicles.models import VehicleCategory, Vehicle, VehicleImage
+from apps.guides.models import GuideCategory, Guide, GuideLanguage
 from apps.testimonials.models import Testimonial
 from apps.faqs.models import FAQ
 from apps.currency.models import CurrencyRate
@@ -12,10 +12,10 @@ from apps.currency.models import CurrencyRate
 User = get_user_model()
 
 class Command(BaseCommand):
-    help = 'Seeds the database with verified initial destinations, packages, itineraries, testimonials, FAQs and currency rates.'
+    help = 'Seeds the database with verified initial vehicles, guides, languages, testimonials, FAQs and currency rates.'
 
     def handle(self, *args, **options):
-        self.stdout.write("Seeding comprehensive database...")
+        self.stdout.write("Seeding travel services discovery platform database...")
 
         # 1. Admin superuser
         if not User.objects.filter(username='admin').exists():
@@ -25,7 +25,7 @@ class Command(BaseCommand):
         # 2. Website Settings
         settings = WebsiteSettings.get_settings()
         settings.company_name = "Namaste Journeys"
-        settings.tagline = "Extraordinary Journeys Through India"
+        settings.tagline = "Premium Indian Travel Services: Vehicles & Multilingual Guides"
         settings.email_address = "inquiries@namastejourneys.com"
         settings.phone_number = "+91 11 2345 6789"
         settings.whatsapp_number = "+919876543210"
@@ -47,128 +47,380 @@ class Command(BaseCommand):
             defaults={'base_currency': 'INR', 'rate': Decimal('0.009300'), 'inverse_rate': Decimal('107.500000')}
         )
 
-        # 4. Regions
-        regions_info = [
-            {
-                'name': 'north', 'slug': 'north-india', 'title': 'North India',
-                'tagline': 'Imperial Palaces, Sacred Rivers & Majestic Himalayan Heights',
-                'description': 'Home to the iconic Golden Triangle, regal Rajput fortresses of Rajasthan, holy spirituality of Varanasi, and snow-crowned Himalayan valleys.',
-                'best_time_to_visit': 'October to March (Himalayas: May to September)',
-                'popular_experiences': ['Taj Mahal at sunrise with senior historian', 'Private palace dinners in Rajasthan', 'Ganga Aarti ceremonies in Varanasi', 'Chauffeur expeditions across Ladakh passes'],
-                'display_order': 1
-            },
-            {
-                'name': 'south', 'slug': 'south-india', 'title': 'South India',
-                'tagline': 'Tranquil Backwaters, Ancient Dravidian Temples & Lush Plantations',
-                'description': 'A serene sanctuary of palm-fringed backwaters, aromatic spice hills of Munnar and Coorg, and the stone-carved ruins of Hampi.',
-                'best_time_to_visit': 'September to March',
-                'popular_experiences': ['Private Kettuvallam houseboat journeys', 'Ayurvedic wellness retreats in Kovalam', 'Exploring the Vijayanagara ruins of Hampi', 'Tea estate bungalows in Munnar'],
-                'display_order': 2
-            },
-            {
-                'name': 'east', 'slug': 'east-india', 'title': 'East & North-East India',
-                'tagline': 'Colonial Elegance, Living Root Bridges & Rhino Sanctuaries',
-                'description': 'From Kolkata’s literary heritage to the mystical clouds of Meghalaya, organic tea slopes of Darjeeling, and wild safaris of Kaziranga.',
-                'best_time_to_visit': 'October to April',
-                'popular_experiences': ['Toy Train ride overlooking Kanchenjunga', 'One-horned rhino safaris in Kaziranga', 'Trekking living root bridges in Cherrapunji', 'Kolkata heritage walk & culinary trail'],
-                'display_order': 3
-            },
-            {
-                'name': 'west', 'slug': 'west-india', 'title': 'West India',
-                'tagline': 'Golden Coastlines, White Salt Deserts & Asiatic Lions',
-                'description': 'Dynamic metropolis of Mumbai, bohemian luxury villas of Goa, the stark ethereal White Rann of Kutch, and Gir’s untamed wildlife.',
-                'best_time_to_visit': 'November to February',
-                'popular_experiences': ['Full-moon glamping in Rann of Kutch', 'Private sailing & luxury villas in South Goa', 'Art deco architectural walks in South Mumbai', 'Tracking Asiatic lions in Gir National Park'],
-                'display_order': 4
-            },
+        # 4. Languages
+        languages_seed = [
+            ('English', 'en', 1),
+            ('Hindi', 'hi', 2),
+            ('French', 'fr', 3),
+            ('German', 'de', 4),
+            ('Spanish', 'es', 5),
+            ('Italian', 'it', 6),
+            ('Russian', 'ru', 7),
+            ('Japanese', 'ja', 8),
+            ('Chinese', 'zh', 9),
+            ('Arabic', 'ar', 10),
+            ('Korean', 'ko', 11),
         ]
-        created_regions = {}
-        for r_data in regions_info:
-            reg, _ = Region.objects.update_or_create(name=r_data['name'], defaults=r_data)
-            created_regions[r_data['name']] = reg
-
-        # 5. Core Destinations Database Import
-        destinations_data = [
-            # NORTH
-            ('Delhi', 'delhi', 'Delhi NCR', 'north', 'India’s majestic capital blending 8 historic empires with tree-lined colonial avenues and vibrant spice bazaars.', 'October to March', '2-3 Days', ['Humayun’s Tomb', 'Qutub Minar', 'Red Fort', 'Jama Masjid', 'India Gate'], ['Heritage cycle tour', 'Chandni Chowk tasting'], ['Heritage', 'Culture'], ['Winter', 'Spring'], True),
-            ('Agra', 'agra', 'Uttar Pradesh', 'north', 'Home of the eternal Taj Mahal, monumental Agra Fort, and the deserted Mughal dream city of Fatehpur Sikri.', 'October to March', '1-2 Days', ['Taj Mahal', 'Agra Fort', 'Fatehpur Sikri', 'Mehtab Bagh'], ['Sunrise private viewing of Taj Mahal', 'Marble Pietra Dura atelier visit'], ['Heritage', 'Architecture'], ['Winter', 'Autumn'], True),
-            ('Jaipur', 'jaipur', 'Rajasthan', 'north', 'The storied Pink City, famed for Amer Fort, pastel-hued royal palaces, and gemstone artisans.', 'October to March', '3-4 Days', ['Amer Fort', 'Hawa Mahal', 'City Palace', 'Jantar Mantar'], ['Sunrise balloon safari over Amer', 'Private gemologist consultation'], ['Heritage', 'Palace Stay'], ['Winter', 'Spring'], True),
-            ('Udaipur', 'udaipur', 'Rajasthan', 'north', 'The romantic City of Lakes with marble palaces floating on serene Lake Pichola.', 'October to March', '3-4 Days', ['City Palace Complex', 'Lake Pichola', 'Jag Mandir', 'Saheliyon-ki-Bari'], ['Private sunset solar boat charter', 'Miniature painting masterclass'], ['Romantic', 'Luxury', 'Heritage'], ['Winter'], True),
-            ('Jodhpur', 'jodhpur', 'Rajasthan', 'north', 'The Sun City crowned by towering Mehrangarh Fort and labyrinths of indigo-painted houses.', 'October to March', '2-3 Days', ['Mehrangarh Fort', 'Jaswant Thada', 'Umaid Bhawan Palace'], ['Ziplining fort battlements', 'Blue city Brahmin walk'], ['Heritage', 'Photography'], ['Winter'], False),
-            ('Jaisalmer', 'jaisalmer', 'Rajasthan', 'north', 'The Golden City rising like a mirage from the Thar Desert with a living medieval sandstone fort.', 'October to March', '2-3 Days', ['Jaisalmer Fort', 'Patwon-ki-Haveli', 'Sam Sand Dunes'], ['Glamping in Thar dunes', 'Camel ride at sunset'], ['Desert', 'Heritage'], ['Winter'], False),
-            ('Varanasi', 'varanasi', 'Uttar Pradesh', 'north', 'One of the oldest living cities on earth, where ancient Vedic rituals meet the sacred Ganges River.', 'October to March', '2-3 Days', ['Dashashwamedh Ghat', 'Assi Ghat', 'Kashi Vishwanath', 'Sarnath'], ['Sunrise riverboat ride', 'VIP seating for Ganga Aarti'], ['Spiritual', 'Ancient Culture'], ['Winter'], True),
-            ('Rishikesh', 'rishikesh', 'Uttarakhand', 'north', 'The Yoga Capital of the World where the turquoise Ganga tumbles from Himalayan foothills.', 'September to April', '3-4 Days', ['Parmarth Niketan', 'Ram Jhula', 'Beatles Ashram'], ['Yoga & breathwork with master yogi', 'Aarti at Triveni Ghat'], ['Wellness', 'Yoga'], ['Spring', 'Autumn'], False),
-            ('Haridwar', 'haridwar', 'Uttarakhand', 'north', 'Ancient pilgrimage gateway at Har Ki Pauri where millions witness floating leaf lamps at dusk.', 'October to March', '1-2 Days', ['Har Ki Pauri', 'Mansa Devi Temple', 'Chandi Devi'], ['Evening diya prayer ceremony', 'Ropeway ascent'], ['Spiritual', 'Heritage'], ['Winter'], False),
-            ('Shimla', 'shimla', 'Himachal Pradesh', 'north', 'The historic British summer capital with Tudor-style lodges, pine forests, and Toy Train.', 'March to June & Oct to Feb', '3 Days', ['The Ridge & Mall Road', 'Viceregal Lodge', 'UNESCO Toy Train'], ['Toy train scenic ride', 'Colonial heritage walk'], ['Mountains', 'Colonial'], ['Summer', 'Winter'], False),
-            ('Manali', 'manali', 'Himachal Pradesh', 'north', 'Alpine pine valley of snow summits, roaring Beas River, and gateway to high mountain passes.', 'April to June & Oct to Feb', '3-4 Days', ['Solang Valley', 'Hadimba Temple', 'Atal Tunnel'], ['Drive through Atal Tunnel', 'Cedar forest trekking'], ['Adventure', 'Alpine'], ['Summer', 'Winter'], False),
-            ('Leh-Ladakh', 'leh-ladakh', 'Ladakh', 'north', 'The Moonland of high mountain passes, sapphire-colored Pangong Lake, and centuries-old Buddhist monasteries.', 'May to September', '6-8 Days', ['Pangong Tso Lake', 'Nubra Valley', 'Thiksey Monastery'], ['Monastic chanting at dawn', 'Bactrian camel ride'], ['Adventure', 'High Altitude'], ['Summer'], True),
-            ('Kashmir', 'kashmir', 'Jammu & Kashmir', 'north', 'Paradise on Earth: cedar-lined Dal Lake houseboats, Mughal pleasure gardens, and alpine meadows.', 'March to October', '5-7 Days', ['Dal Lake', 'Gulmarg Gondola', 'Pahalgam', 'Shalimar Bagh'], ['Shikara sunset ride', 'Gulmarg Gondola to Apharwat peak'], ['Luxury Houseboat', 'Romantic'], ['Spring', 'Summer'], False),
-            ('Amritsar', 'amritsar', 'Punjab', 'north', 'Spiritual center of Sikhism housing the glistening Golden Temple and legendary Punjabi hospitality.', 'October to March', '2 Days', ['Golden Temple', 'Wagah Border', 'Jallianwala Bagh'], ['Langar community kitchen service', 'Wagah Border ceremony'], ['Spiritual', 'Heritage'], ['Winter'], False),
-            
-            # SOUTH
-            ('Kerala', 'kerala', 'Kerala', 'south', 'God’s Own Country: tranquil waterways, Ayurvedic sanctuaries, and misty mountain plantations.', 'September to March', '7-10 Days', ['Alleppey Backwaters', 'Munnar Tea Hills', 'Fort Kochi'], ['Houseboat cruise', 'Ayurvedic wellness rejuvenation'], ['Backwaters', 'Wellness'], ['Winter'], True),
-            ('Munnar', 'munnar', 'Kerala', 'south', 'Rolling carpet of emerald tea estates nestled among the highest peaks of South India.', 'September to April', '2-3 Days', ['Eravikulam National Park', 'Mattupetty Dam', 'Tea Museum'], ['Tea plucking and tasting masterclass', 'Shola forest walk'], ['Plantations', 'Hills'], ['Winter', 'Autumn'], False),
-            ('Alleppey', 'alleppey', 'Kerala', 'south', 'Venice of the East, famed for private luxury houseboats cruising calm, palm-canopied lagoons.', 'September to March', '2-3 Days', ['Vembanad Lake', 'Backwaters canals', 'Marari Beach'], ['Overnight luxury private houseboat journey', 'Village canoe trail'], ['Backwaters', 'Wellness'], ['Winter'], True),
-            ('Kochi', 'kochi', 'Kerala', 'south', 'Historic port city weaving Chinese fishing nets, Portuguese havelis, and Dutch palaces.', 'October to March', '2 Days', ['Chinese Fishing Nets', 'Mattancherry Dutch Palace', 'Jew Town'], ['Fort Kochi walking tour', 'Kathakali classical dance show'], ['Colonial Heritage', 'Maritime'], ['Winter'], False),
-            ('Wayanad', 'wayanad', 'Kerala', 'south', 'Lush rainforest sanctuary with Neolithic rock art caves, spice estates, and wild elephant corridors.', 'October to May', '3 Days', ['Edakkal Caves', 'Banasura Sagar Dam', 'Wayanad Wildlife Sanctuary'], ['Guided safari in wildlife sanctuary', 'Bamboo rafting'], ['Nature', 'Wildlife'], ['Winter'], False),
-            ('Bengaluru', 'bengaluru', 'Karnataka', 'south', 'The Garden City and cosmopolitan tech innovation capital with leafy parks and craft breweries.', 'Year-round', '2 Days', ['Lalbagh Botanical Garden', 'Bangalore Palace', 'Cubbon Park'], ['Lalbagh morning walk', 'Artisan filter coffee tasting'], ['Urban', 'Gardens'], ['Winter', 'Spring'], False),
-            ('Mysore', 'mysore', 'Karnataka', 'south', 'The City of Palaces, fragrant with sandalwood, rich Mysore silk, and royal Dasara heritage.', 'October to March', '2 Days', ['Mysore Palace', 'Chamundi Hill', 'Devaraja Market'], ['Mysore Palace royal art tour', 'Sandalwood & silk workshop'], ['Heritage', 'Palace'], ['Winter'], False),
-            ('Ooty', 'ooty', 'Tamil Nadu', 'south', 'Queen of Hill Stations in the blue Nilgiri Mountains with UNESCO mountain railway.', 'October to June', '2-3 Days', ['Nilgiri Mountain Railway', 'Ooty Botanical Gardens', 'Pykara Lake'], ['UNESCO toy train steam ride', 'Nilgiri tea tasting'], ['Hills', 'Toy Train'], ['Spring', 'Summer'], False),
-            ('Coorg', 'coorg', 'Karnataka', 'south', 'The Scotland of India: mist-veiled coffee plantations, spice gardens, and Tibetan settlements.', 'October to April', '2-3 Days', ['Namdroling Golden Temple', 'Abbey Falls', 'Raja’s Seat'], ['Private coffee estate walk', 'Monastery prayer chanting'], ['Plantations', 'Wellness'], ['Winter'], False),
-            ('Chennai', 'chennai', 'Tamil Nadu', 'south', 'Gateway to South India, renowned for classical Carnatic music, Dravidian temples, and Marina Beach.', 'November to February', '2 Days', ['Kapaleeshwarar Temple', 'San Thome Basilica', 'Marina Beach'], ['Mylapore heritage walk', 'Chola bronzes inspection'], ['Dravidian Heritage', 'Coastal'], ['Winter'], False),
-            ('Mahabalipuram', 'mahabalipuram', 'Tamil Nadu', 'south', 'UNESCO coastal sanctuary of 7th-century rock-cut monolithic temples and shore shrines.', 'October to March', '1-2 Days', ['Shore Temple', 'Descent of the Ganges', 'Pancha Rathas'], ['Archaeological survey walk', 'Shore temple photography'], ['Archaeology', 'UNESCO'], ['Winter'], False),
-            ('Madurai', 'madurai', 'Tamil Nadu', 'south', 'The Athens of the East centered around the towering sculpted gopurams of Meenakshi Temple.', 'October to March', '1-2 Days', ['Meenakshi Amman Temple', 'Thirumalai Nayakkar Mahal'], ['Meenakshi Temple evening procession', 'Old bazaar rickshaw trail'], ['Temple Architecture', 'Spiritual'], ['Winter'], False),
-            ('Rameswaram', 'rameswaram', 'Tamil Nadu', 'south', 'Sacred island temple sanctuary with the longest stone-pillared corridors in the world.', 'October to March', '1-2 Days', ['Ramanathaswamy Temple', 'Pamban Sea Bridge', 'Dhanushkodi'], ['1000-pillar corridor walk', '4x4 trip to Dhanushkodi'], ['Pilgrimage', 'Oceanic'], ['Winter'], False),
-            ('Hampi', 'hampi', 'Karnataka', 'south', 'UNESCO World Heritage wonderland of boulder-strewn hills and monolithic ruins of the Vijayanagara Empire.', 'October to February', '3 Days', ['Virupaksha Temple', 'Vittala Stone Chariot', 'Lotus Mahal'], ['Sunset coracle boat ride', 'Matanga Hill sunrise hike'], ['History', 'Archaeology', 'UNESCO'], ['Winter'], True),
-            ('Hyderabad', 'hyderabad', 'Telangana', 'south', 'City of Pearls and Nizami splendor, home to Charminar, Golconda Fort, and world-famous Biryani.', 'October to March', '2-3 Days', ['Charminar', 'Golconda Fort', 'Taj Falaknuma Palace'], ['High tea at Taj Falaknuma', 'Golconda sound and light show'], ['Nizami Heritage', 'Culinary'], ['Winter'], False),
-
-            # EAST
-            ('Kolkata', 'kolkata', 'West Bengal', 'east', 'Cultural & intellectual capital of India, filled with Victorian grandeur, tramways, and literary soul.', 'October to March', '2-3 Days', ['Victoria Memorial', 'Howrah Bridge', 'College Street'], ['Heritage tram ride', 'Kumartuli sculptor studio walk'], ['Colonial Heritage', 'Literature'], ['Winter'], True),
-            ('Darjeeling', 'darjeeling', 'West Bengal', 'east', 'The Champagne of Teas hill retreat with panoramic views of Mount Kanchenjunga.', 'March to May & Oct to Dec', '3 Days', ['Tiger Hill', 'UNESCO Toy Train', 'Happy Valley Tea Estate'], ['Sunrise over Kanchenjunga', 'Tea tasting with master blender'], ['Tea Estates', 'Himalayas'], ['Spring', 'Autumn'], True),
-            ('Sikkim', 'sikkim', 'Sikkim', 'east', 'India’s 100% organic Himalayan kingdom of sacred alpine lakes, rhododendrons, and monasteries.', 'March to May & Oct to Dec', '5-7 Days', ['Rumtek Monastery', 'Tsomgo Lake', 'Nathula Pass'], ['Monastery butter lamp ritual', 'Glacial lake excursion'], ['Organic Himalayan', 'Monasteries'], ['Spring', 'Autumn'], False),
-            ('Gangtok', 'gangtok', 'Sikkim', 'east', 'Vibrant capital of Sikkim perched on mountain ridge with ropeway views and Buddhist sanctuaries.', 'October to May', '2-3 Days', ['MG Marg Promenade', 'Rumtek Dharma Chakra Centre', 'Enchey Monastery'], ['Gangtok ropeway ride', 'Tibetology institute exploration'], ['Himalayan Town', 'Culture'], ['Winter', 'Spring'], False),
-            ('Pelling', 'pelling', 'Sikkim', 'east', 'Closest vantage town facing Mt. Kanchenjunga with glass skywalk and sacred forest monasteries.', 'October to May', '2 Days', ['Pemayangtse Monastery', 'Rabdentse Ruins', 'Glass Skywalk'], ['Glass skywalk stroll', 'Sunrise over Kanchenjunga'], ['Snow Views', 'Monasteries'], ['Winter', 'Spring'], False),
-            ('Shillong', 'shillong', 'Meghalaya', 'east', 'The Scotland of the East: pine-scented hills, crystal waterfalls, and India’s rock music capital.', 'September to May', '2-3 Days', ['Umiam Lake', 'Elephant Falls', 'Laitlum Canyons'], ['Boating on Umiam Lake', 'Indigenous tribal culture museum'], ['Hills', 'Music & Youth'], ['Autumn', 'Winter'], False),
-            ('Meghalaya', 'meghalaya', 'Meghalaya', 'east', 'The Abode of Clouds: living root bridges, mystical limestone caves, and transparent river waters.', 'October to April', '5-6 Days', ['Double Decker Living Root Bridge', 'Dawki Umngot River', 'Cherrapunji Waterfalls'], ['Living root bridge trek', 'Transparent boat ride on Umngot River'], ['Living Bridges', 'Adventure'], ['Autumn', 'Winter'], True),
-            ('Cherrapunji', 'cherrapunji', 'Meghalaya', 'east', 'Land of thunderous waterfalls and the legendary double-decker living root bridges.', 'September to May', '2 Days', ['Nohkalikai Falls', 'Seven Sisters Falls', 'Mawsmai Cave'], ['Rainforest botanical hike', 'Mawsmai limestone cave exploration'], ['Waterfalls', 'Nature'], ['Autumn', 'Winter'], False),
-            ('Kaziranga', 'kaziranga', 'Assam', 'east', 'UNESCO World Heritage home to two-thirds of the world’s great one-horned rhinoceros population.', 'November to April', '2-3 Days', ['Central & Western Safari Ranges', 'Brahmaputra Sanctuary'], ['Private 4x4 open-top jeep safari', 'Close-range rhino observation'], ['Wildlife Safari', 'UNESCO'], ['Winter', 'Spring'], True),
-            ('Assam', 'assam', 'Assam', 'east', 'The Brahmaputra River valley of orthodox black tea estates, river islands, and ancient Ahom kingdom.', 'October to April', '4-6 Days', ['Brahmaputra Cruises', 'Majuli River Island', 'Kamakhya Temple'], ['Majuli mask making studio', 'River cruise excursion'], ['River Cruise', 'Tea Plantations'], ['Winter', 'Spring'], False),
-            ('Puri', 'puri', 'Odisha', 'east', 'Coastal pilgrimage city housing the 12th-century Jagannath Temple and annual Rath Yatra.', 'October to March', '2 Days', ['Jagannath Temple', 'Golden Beach', 'Konark Sun Temple nearby'], ['Konark sun temple excursion', 'Pattachitra artisan village tour'], ['Pilgrimage', 'Beach'], ['Winter'], False),
-            ('Bhubaneswar', 'bhubaneswar', 'Odisha', 'east', 'The Temple City of India, preserving over 500 historic Kalinga-style sandstone shrines.', 'October to March', '2 Days', ['Mukteshvara Temple', 'Lingaraj Temple', 'Udayagiri Caves'], ['Temple architecture heritage walk', 'Ancient Jain rock-cut caves'], ['Archaeology', 'History'], ['Winter'], False),
-
-            # WEST
-            ('Mumbai', 'mumbai', 'Maharashtra', 'west', 'The Financial Capital: Victorian Gothic & Art Deco architecture, Marine Drive, and Bollywood.', 'November to February', '2-3 Days', ['Gateway of India', 'CSMT UNESCO Station', 'Marine Drive', 'Elephanta Caves'], ['Sunset harbour sailing', 'Art deco architectural walking tour'], ['Metropolis', 'Colonial & Art Deco'], ['Winter'], True),
-            ('Goa', 'goa', 'Goa', 'west', 'Portuguese colonial heritage villas, golden palm beaches, and slow bohemian coastal luxury.', 'November to March', '4-6 Days', ['Basilica of Bom Jesus', 'Fontainhas Latin Quarter', 'Palolem Beach'], ['Private yacht cruise on Mandovi', 'Fontainhas heritage architecture walk'], ['Beaches', 'Portuguese Heritage'], ['Winter'], True),
-            ('Pune', 'pune', 'Maharashtra', 'west', 'Oxford of the East and capital of the Maratha Empire with Shaniwar Wada and Aga Khan Palace.', 'October to March', '2 Days', ['Aga Khan Palace', 'Shaniwar Wada', 'Sinhagad Fort'], ['Aga Khan Palace memorial tour', 'Sinhagad morning fort hike'], ['Maratha Heritage', 'Culture'], ['Winter'], False),
-            ('Lonavala', 'lonavala', 'Maharashtra', 'west', 'Sahyadri mountain hill station famous for Karla & Bhaja ancient Buddhist caves and waterfalls.', 'July to March', '1-2 Days', ['Karla Caves', 'Bhaja Caves', 'Lohagad Fort'], ['Climbing to ancient rock-cut chaitya', 'Lohagad fort ramparts walk'], ['Hills', 'Rock-cut Caves'], ['Monsoon', 'Winter'], False),
-            ('Mahabaleshwar', 'mahabaleshwar', 'Maharashtra', 'west', 'Strawberry capital of India with panoramic Western Ghats cliff viewpoints and colonial estates.', 'October to June', '2 Days', ['Arthur’s Seat', 'Venna Lake', 'Pratapgad Fort'], ['Strawberry farm picking', 'Pratapgad fort expedition'], ['Hills', 'Plantations'], ['Winter', 'Spring'], False),
-            ('Ahmedabad', 'ahmedabad', 'Gujarat', 'west', 'India’s first UNESCO World Heritage City, famed for intricate stepwells and Gandhi’s Sabarmati Ashram.', 'October to March', '2 Days', ['Sabarmati Ashram', 'Adalaj Stepwell', 'Sidi Saiyyed Mosque'], ['Old city pols morning walk', 'Calico textile museum private tour'], ['UNESCO Heritage', 'Architecture'], ['Winter'], True),
-            ('Rann of Kutch', 'rann-of-kutch', 'Gujarat', 'west', 'The ethereal White Desert: endless glistening salt plains under full moon and master tribal artisans.', 'November to February', '2-3 Days', ['White Rann Salt Desert', 'Kalo Dungar', 'Nirona Craft Village'], ['Sunset and full moon walk on white salt', 'Rogan oil art demonstration'], ['Salt Desert', 'Artisan Crafts'], ['Winter'], True),
-            ('Gir National Park', 'gir-national-park', 'Gujarat', 'west', 'The sole remaining sanctuary on earth for the majestic Asiatic Lion (Panthera leo persica).', 'December to March', '2-3 Days', ['Gir Wildlife Sanctuary Core', 'Devalia Safari Park'], ['Tracking Asiatic lions in open 4x4 Gypsy', 'Kamleshwar crocodile lake visit'], ['Wildlife Safari', 'Asiatic Lions'], ['Winter', 'Spring'], True),
-            ('Mount Abu', 'mount-abu', 'Rajasthan', 'west', 'Rajasthan’s sole hill station harboring the ethereal 11th-century Dilwara Marble Jain Temples.', 'October to March', '2 Days', ['Dilwara Jain Temples', 'Nakki Lake', 'Guru Shikhar'], ['Marveling at carved marble ceilings of Dilwara', 'Paddle boating on Nakki Lake'], ['Marble Architecture', 'Hills'], ['Winter'], False),
-            ('Dwarka', 'dwarka', 'Gujarat', 'west', 'Ancient coastal kingdom of Lord Krishna on the Arabian Sea with the 2,000-year-old Dwarkadhish Temple.', 'October to March', '2 Days', ['Dwarkadhish Temple', 'Bet Dwarka Island', 'Shivrajpur Blue Flag Beach'], ['Ferry crossing to Bet Dwarka', 'Sunset at Gomti river confluence'], ['Pilgrimage', 'Oceanic'], ['Winter'], False),
-        ]
-
-        count = 0
-        for name, slug, state, reg_key, short_desc, best_time, duration, atts, acts, styles, seasons, is_feat in destinations_data:
-            dest, _ = Destination.objects.update_or_create(
-                slug=slug,
-                defaults={
-                    'name': name,
-                    'state': state,
-                    'region': created_regions[reg_key],
-                    'short_description': short_desc,
-                    'detailed_description': f"{name} in {state} ({created_regions[reg_key].title}) offers international voyagers an extraordinary private journey. {short_desc}",
-                    'best_time_to_visit': best_time,
-                    'recommended_duration': duration,
-                    'main_attractions': atts,
-                    'activities': acts,
-                    'travel_styles': styles,
-                    'ideal_seasons': seasons,
-                    'is_featured': is_feat,
-                    'is_published': True,
-                }
+        created_languages = {}
+        for l_name, l_code, l_order in languages_seed:
+            lang, _ = Language.objects.update_or_create(
+                code=l_code,
+                defaults={'name': l_name, 'display_order': l_order, 'is_active': True}
             )
-            count += 1
+            created_languages[l_code] = lang
+        self.stdout.write(self.style.SUCCESS("Created Languages"))
 
-        self.stdout.write(self.style.SUCCESS(f"Successfully seeded {count} destinations covering North, South, East, and West India."))
+        # 5. Vehicle Categories & Vehicles
+        veh_categories_data = [
+            ('Sedan', 'sedan', 'Comfortable air-conditioned private sedans for couples and solo travelers', 1),
+            ('SUV', 'suv', 'Spacious high-ground clearance luxury SUVs for family road trips & hilly terrains', 2),
+            ('MUV', 'muv', 'Multi-utility vehicles balancing passenger seating and luggage space', 3),
+            ('Premium Cars', 'premium-cars', 'Executive premium sedans for high-comfort long-distance touring', 4),
+            ('Luxury Cars', 'luxury-cars', 'Chauffeured luxury Mercedes & BMW sedans for diplomatic and VIP voyagers', 5),
+            ('Tempo Traveller', 'tempo-traveller', 'Dedicated group minibuses with high-roof air conditioning & reclining seats', 6),
+            ('Mini Bus', 'mini-bus', 'Mid-sized group coaches for private delegation transfers and excursions', 7),
+            ('Luxury Coach', 'luxury-coach', 'Full-size luxury air-conditioned coaches for large tour groups', 8),
+            ('Tourist Bus', 'tourist-bus', 'Comfortable long-haul interstate tourist coaches', 9),
+        ]
+        created_veh_cats = {}
+        for cat_name, cat_slug, cat_desc, cat_order in veh_categories_data:
+            vc, _ = VehicleCategory.objects.update_or_create(
+                slug=cat_slug,
+                defaults={'name': cat_name, 'description': cat_desc, 'display_order': cat_order}
+            )
+            created_veh_cats[cat_slug] = vc
+
+        vehicles_data = [
+            {
+                'name': 'Toyota Innova Crysta (Luxury MUV)',
+                'slug': 'toyota-innova-crysta',
+                'brand': 'Toyota',
+                'model_name': 'Innova Crysta ZX',
+                'category': created_veh_cats['muv'],
+                'seating_capacity': 6,
+                'luggage_capacity': 4,
+                'is_air_conditioned': True,
+                'facilities': ['Dedicated Verified Chauffeur in Uniform', 'Bottled Mineral Water', 'USB Charging Ports', 'First Aid Kit', 'Air Purifier', 'Reclining Captain Seats'],
+                'description': 'India’s most celebrated tourist vehicle. Offers unbeatable suspension comfort across mountain roads and interstate expressways with dedicated chauffeur service.',
+                'price_inr': Decimal('4800.00'),
+                'pricing_unit': 'Per Day (250 km included)',
+                'availability_status': 'available',
+                'is_featured': True,
+            },
+            {
+                'name': 'Mercedes-Benz E-Class Luxury Sedan',
+                'slug': 'mercedes-benz-e-class',
+                'brand': 'Mercedes-Benz',
+                'model_name': 'E 220d Exclusive',
+                'category': created_veh_cats['luxury-cars'],
+                'seating_capacity': 3,
+                'luggage_capacity': 3,
+                'is_air_conditioned': True,
+                'facilities': ['Executive Leather Seating', 'Chauffeur in Formal Attire', 'Ambient Lighting', 'Chilled Bottled Water', 'Wi-Fi Hotspot', 'Sanitized Interior'],
+                'description': 'The epitome of diplomatic elegance. Perfect for luxury Golden Triangle journeys, royal palace transfers in Rajasthan, and executive airport receptions.',
+                'price_inr': Decimal('14500.00'),
+                'pricing_unit': 'Per Day (8 Hours / 80 km)',
+                'availability_status': 'available',
+                'is_featured': True,
+            },
+            {
+                'name': 'Toyota Fortuner 4x4 Luxury SUV',
+                'slug': 'toyota-fortuner-4x4',
+                'brand': 'Toyota',
+                'model_name': 'Fortuner 2.8L 4x4 AT',
+                'category': created_veh_cats['suv'],
+                'seating_capacity': 6,
+                'luggage_capacity': 4,
+                'is_air_conditioned': True,
+                'facilities': ['All-Wheel Drive Traction', 'High Ground Clearance', 'Leather Reclining Seats', 'Phone Charging Sockets', 'Mineral Water', 'Luggage Carrier'],
+                'description': 'Built for high Himalayan passes in Ladakh and Himachal, desert trails in Jaisalmer, and jungle safari approaches in Kaziranga and Gir.',
+                'price_inr': Decimal('7500.00'),
+                'pricing_unit': 'Per Day (250 km included)',
+                'availability_status': 'available',
+                'is_featured': True,
+            },
+            {
+                'name': 'Force Urbania Luxury Van (9-12 Seater)',
+                'slug': 'force-urbania-luxury-van',
+                'brand': 'Force Motors',
+                'model_name': 'Urbania Premium Monocoque',
+                'category': created_veh_cats['tempo-traveller'],
+                'seating_capacity': 10,
+                'luggage_capacity': 8,
+                'is_air_conditioned': True,
+                'facilities': ['World-class Monocoque Ride Quality', 'Individual AC Vents', 'Individual USB Ports', 'Large Panoramic Windows', 'Overhead Luggage Racks', 'Spacious Central Aisle'],
+                'description': 'A new standard in group luxury touring. European styling, ultra-quiet cabin, and plush captain seats designed for discerning family and delegations.',
+                'price_inr': Decimal('8500.00'),
+                'pricing_unit': 'Per Day (250 km included)',
+                'availability_status': 'available',
+                'is_featured': True,
+            },
+            {
+                'name': 'Tempo Traveller 16-Seater Deluxe',
+                'slug': 'tempo-traveller-16-seater',
+                'brand': 'Force Motors',
+                'model_name': 'Traveller 3700 WB Deluxe',
+                'category': created_veh_cats['tempo-traveller'],
+                'seating_capacity': 15,
+                'luggage_capacity': 12,
+                'is_air_conditioned': True,
+                'facilities': ['2x1 Pushback Reclining Seats', 'Roof AC', 'LED Reading Lights', 'Ice Box & First Aid Kit', 'Microphone System for Guide'],
+                'description': 'The proven choice for medium-sized international groups touring Rajasthan, South India, and Buddhist circuits.',
+                'price_inr': Decimal('9200.00'),
+                'pricing_unit': 'Per Day (250 km included)',
+                'availability_status': 'available',
+                'is_featured': False,
+            },
+            {
+                'name': 'Luxury Volvo Air-Conditioned Coach (45 Seater)',
+                'slug': 'luxury-volvo-coach-45-seater',
+                'brand': 'Volvo',
+                'model_name': 'Volvo 9600 Multi-Axle',
+                'category': created_veh_cats['luxury-coach'],
+                'seating_capacity': 45,
+                'luggage_capacity': 40,
+                'is_air_conditioned': True,
+                'facilities': ['Air Suspension Ride', 'Ergonomic Reclining Seats', 'PA System & Guide Microphone', 'Underfloor Vast Cargo Hold', 'Emergency Exits & CCTV'],
+                'description': 'State-of-the-art multi-axle luxury coach for large international corporate groups, academic tours, and cultural delegations.',
+                'price_inr': None,
+                'pricing_unit': 'Request a Quote',
+                'availability_status': 'on_request',
+                'is_featured': True,
+            },
+            {
+                'name': 'Toyota Camry Hybrid Premium Sedan',
+                'slug': 'toyota-camry-hybrid',
+                'brand': 'Toyota',
+                'model_name': 'Camry Hybrid Electric',
+                'category': created_veh_cats['premium-cars'],
+                'seating_capacity': 3,
+                'luggage_capacity': 3,
+                'is_air_conditioned': True,
+                'facilities': ['Whisper-quiet Hybrid Powertrain', 'Rear Reclining Sunshade Seats', 'Three-zone Climate Control', 'Chilled Water & Mints', 'Uniformed Chauffeur'],
+                'description': 'Eco-conscious executive refinement. Ideal for city excursions in Delhi, Mumbai, Bengaluru, and airport transfers.',
+                'price_inr': Decimal('9500.00'),
+                'pricing_unit': 'Per Day (8 Hours / 80 km)',
+                'availability_status': 'available',
+                'is_featured': False,
+            },
+        ]
+
+        for v_data in vehicles_data:
+            veh, _ = Vehicle.objects.update_or_create(
+                slug=v_data['slug'],
+                defaults=v_data
+            )
+        self.stdout.write(self.style.SUCCESS("Created Vehicles"))
+
+        # 8. Guide Categories & Tour Guides
+        guide_categories_data = [
+            ('Professional Tour Guide', 'professional-tour-guide', 'Govt. certified regional tour leaders with extensive national itinerary expertise', 1),
+            ('Local City Guide', 'local-city-guide', 'Deep experts in individual historical cities and UNESCO monument zones', 2),
+            ('Heritage Guide', 'heritage-guide', 'Specialists in ancient temple epigraphy, fort architecture, and dynasties', 3),
+            ('Cultural Guide', 'cultural-guide', 'Experts in living traditions, festivals, culinary walks, and classical arts', 4),
+            ('Wildlife Guide', 'wildlife-guide', 'Certified naturalists and birding specialists for national parks and tiger reserves', 5),
+            ('Adventure Guide', 'adventure-guide', 'High Himalayan trekking, pass crossings, and river expedition leaders', 6),
+            ('Religious and Spiritual Guide', 'religious-and-spiritual-guide', 'Scholars in Vedic rituals, Hindu philosophy, Buddhism, and sacred ghats', 7),
+            ('Nature Guide', 'nature-guide', 'Botanical, plantation, and rainforest biosphere educators', 8),
+        ]
+        created_guide_cats = {}
+        for g_name, g_slug, g_desc, g_order in guide_categories_data:
+            gc, _ = GuideCategory.objects.update_or_create(
+                slug=g_slug,
+                defaults={'name': g_name, 'description': g_desc, 'display_order': g_order}
+            )
+            created_guide_cats[g_slug] = gc
+
+        guides_data = [
+            {
+                'full_name': 'Vikramaditya Sharma',
+                'slug': 'vikramaditya-sharma',
+                'category': created_guide_cats['heritage-guide'],
+                'short_intro': 'Senior ASI-certified architectural historian specializing in the Mughal Empire and Rajput fortresses.',
+                'biography': 'With over 18 years guiding diplomatic delegations, academic researchers, and discerning travelers across Delhi, Agra, and Rajasthan, Vikram brings ancient stone inscriptions and palace intrigue vividly to life.',
+                'years_of_experience': 18,
+                'areas_of_expertise': ['Mughal Architecture', 'Rajput Fortifications', 'Pietra Dura Stone Inlay', 'Old Delhi Heritage Trails'],
+                'specializations': ['Ministry of Tourism Regional Certified', 'Senior ASI Historian', 'VIP Diplomatic Guide'],
+                'price_inr': Decimal('5500.00'),
+                'pricing_unit': 'Per Day (Full Day Guide)',
+                'availability_status': 'available',
+                'certifications': 'Govt. of India Ministry of Tourism Northern Region Certified Guide (License #NR-9812)',
+                'is_featured': True,
+                'languages': [('en', 'native'), ('fr', 'fluent'), ('hi', 'native')],
+            },
+            {
+                'full_name': 'Marie-Claire Dubois (Kishore)',
+                'slug': 'marie-claire-kishore',
+                'category': created_guide_cats['cultural-guide'],
+                'short_intro': 'Native French-speaking cultural specialist with deep expertise in Rajasthan palaces and culinary heritage.',
+                'biography': 'Marie-Claire has resided in Jaipur for 14 years. Fluent in both French and English, she bridges Western expectations with authentic Indian cultural immersion, from private haveli visits to gemstone ateliers.',
+                'years_of_experience': 14,
+                'areas_of_expertise': ['Rajasthani Royal Living', 'Handicraft & Textile Traditions', 'Bespoke Culinary Walks', 'Living Art Workshops'],
+                'specializations': ['Native French Speaker', 'Bespoke Private Group Guide'],
+                'price_inr': Decimal('6500.00'),
+                'pricing_unit': 'Per Day',
+                'availability_status': 'available',
+                'certifications': 'Certified Regional Cultural Tour Guide (License #RJ-4412)',
+                'is_featured': True,
+                'languages': [('fr', 'native'), ('en', 'fluent'), ('es', 'conversational')],
+            },
+            {
+                'full_name': 'Klaus Schneider',
+                'slug': 'klaus-schneider',
+                'category': created_guide_cats['professional-tour-guide'],
+                'short_intro': 'German-speaking expert guide for Golden Triangle, Varanasi, and South India temple circuits.',
+                'biography': 'Klaus specializes in guiding travelers from Germany, Austria, and Switzerland. His scholarly knowledge of Indian philosophy and classical architecture makes complex histories accessible and engrossing.',
+                'years_of_experience': 16,
+                'areas_of_expertise': ['Indo-Islamic History', 'Buddhist Circuit (Sarnath, Bodh Gaya)', 'Dravidian Temples', 'Spiritual Rituals'],
+                'specializations': ['Native German Speaker', 'Philosophy Lecturer', 'Ministry of Tourism Certified'],
+                'price_inr': Decimal('6500.00'),
+                'pricing_unit': 'Per Day',
+                'availability_status': 'available',
+                'certifications': 'Ministry of Tourism Certified National Tour Guide',
+                'is_featured': True,
+                'languages': [('de', 'native'), ('en', 'fluent')],
+            },
+            {
+                'full_name': 'Rameshwar Nair',
+                'slug': 'rameshwar-nair',
+                'category': created_guide_cats['nature-guide'],
+                'short_intro': 'Kerala backwaters and Western Ghats biodiversity expert with native fluency in English and Spanish.',
+                'biography': 'Born in Fort Kochi, Rameshwar has spent 12 years guiding visitors through Kerala’s spice plantations, tea estates of Munnar, and backwaters of Alleppey, sharing botanical insights and local folklore.',
+                'years_of_experience': 12,
+                'areas_of_expertise': ['Ayurvedic Medicinal Plants', 'Backwater Ecology', 'Colonial Fort Kochi History', 'Kathakali Dance Philosophy'],
+                'specializations': ['Kerala Tourism Certified', 'Botanist & Naturalist', 'Spanish Speaking Guide'],
+                'price_inr': Decimal('4500.00'),
+                'pricing_unit': 'Per Day',
+                'availability_status': 'available',
+                'certifications': 'Kerala Tourism Development Corporation Certified Guide',
+                'is_featured': True,
+                'languages': [('es', 'fluent'), ('en', 'fluent'), ('hi', 'conversational')],
+            },
+            {
+                'full_name': 'Dr. Tashi Norbu',
+                'slug': 'dr-tashi-norbu',
+                'category': created_guide_cats['religious-and-spiritual-guide'],
+                'short_intro': 'Tibetan Buddhist scholar and high-altitude trans-Himalayan guide across Ladakh and Sikkim.',
+                'biography': 'Holding a doctorate in Buddhist philosophy, Dr. Tashi Norbu leads travelers through Ladakh’s ancient gompas (Hemis, Thiksey, Diskit) and high-altitude mountain passes with profound spiritual and geological depth.',
+                'years_of_experience': 15,
+                'areas_of_expertise': ['Tibetan Buddhist Art & Frescoes', 'Gompa Architecture', 'Himalayan Dark Sky Stargazing', 'High-altitude Acclimatization'],
+                'specializations': ['Monastic Ritual Scholar', 'Ladakh Tourism Certified Explorer'],
+                'price_inr': Decimal('5800.00'),
+                'pricing_unit': 'Per Day',
+                'availability_status': 'available',
+                'certifications': 'Ladakh Autonomous Hill Development Council Certified Guide',
+                'is_featured': True,
+                'languages': [('en', 'fluent'), ('hi', 'fluent')],
+            },
+            {
+                'full_name': 'Kenji Takahashi (Verma)',
+                'slug': 'kenji-verma',
+                'category': created_guide_cats['local-city-guide'],
+                'short_intro': 'Japanese-speaking specialist guide for Delhi, Agra, and Jaipur heritage monuments.',
+                'biography': 'Having studied Japanese language and international tourism at JNU Delhi, Kenji has guided Japanese VIPs and cultural missions for over a decade with impeccable punctuality and cultural etiquette.',
+                'years_of_experience': 11,
+                'areas_of_expertise': ['Taj Mahal Architecture', 'Amer Fort History', 'Japanese Travel Etiquette', 'Tea Ceremonies and Indian Masala Chai'],
+                'specializations': ['Certified Japanese Language Guide (JLPT N1)', 'Ministry of Tourism Certified'],
+                'price_inr': Decimal('7000.00'),
+                'pricing_unit': 'Per Day',
+                'availability_status': 'available',
+                'certifications': 'Ministry of Tourism Certified Foreign Language Guide (Japanese)',
+                'is_featured': False,
+                'languages': [('ja', 'fluent'), ('en', 'fluent'), ('hi', 'native')],
+            },
+        ]
+
+        for g_data in guides_data:
+            langs = g_data.pop('languages')
+            guide, _ = Guide.objects.update_or_create(
+                slug=g_data['slug'],
+                defaults=g_data
+            )
+            
+            # Associate languages with proficiency
+            for l_code, prof in langs:
+                lang_obj = created_languages.get(l_code)
+                if lang_obj:
+                    GuideLanguage.objects.update_or_create(
+                        guide=guide,
+                        language=lang_obj,
+                        defaults={'proficiency': prof}
+                    )
+        self.stdout.write(self.style.SUCCESS("Created Tour Guides with Language Proficiencies"))
+
+        # 9. Testimonials
+        testimonials_seed = [
+            {
+                'author_name': 'Dr. Eleanor & Marcus Vance',
+                'author_location': 'London, United Kingdom',
+                'trip_title': 'Rajasthan Forts & Golden Triangle Private Chauffeur & Guide',
+                'review_text': 'From the moment our chauffeur met us at Delhi airport in a spotless Toyota Innova Crysta, until our departure from Udaipur, every transfer was completely effortless. Our private historian Vikram was phenomenal, explaining the sheer scale of Amer Fort and the Taj Mahal with extraordinary depth.',
+                'rating': 5,
+                'is_featured': True,
+                'display_order': 1,
+            },
+            {
+                'author_name': 'David K. Söderström',
+                'author_location': 'Stockholm, Sweden',
+                'trip_title': 'Kerala Private Chauffeur & Naturalist',
+                'review_text': 'As first-time visitors to India, we valued punctuality, comfortable air-conditioned private transport, and personalized pace. The private driver was courteous and drove safely through mountain passes. Highly recommend Namaste Journeys!',
+                'rating': 5,
+                'is_featured': True,
+                'display_order': 2,
+            },
+            {
+                'author_name': 'Claire & Jean-Philippe Mercier',
+                'author_location': 'Lyon, France',
+                'trip_title': 'Rajasthan Heritage with French-Speaking Tour Guide',
+                'review_text': 'Finding a genuine, certified French-speaking guide for our multi-city trip in India made all the difference. Marie-Claire was brilliant, courteous, and attentive to every nuance. The vehicle was immaculate throughout.',
+                'rating': 5,
+                'is_featured': True,
+                'display_order': 3,
+            },
+        ]
+        for t_data in testimonials_seed:
+            Testimonial.objects.update_or_create(
+                author_name=t_data['author_name'],
+                defaults=t_data
+            )
+        self.stdout.write(self.style.SUCCESS("Created Testimonials"))
+
+        # 10. FAQs
+        faqs_seed = [
+            {
+                'category': 'transport',
+                'question': 'What type of tourist vehicles do you provide?',
+                'answer': 'We provide modern, clean, air-conditioned private vehicles ranging from sedans (Toyota Camry, Dzire), luxury SUVs (Toyota Fortuner, Innova Crysta), executive cars (Mercedes-Benz E-Class), up to Force Urbania luxury vans, Tempo Travellers, and luxury Volvo coaches.',
+                'display_order': 1,
+                'is_featured': True,
+            },
+            {
+                'category': 'general',
+                'question': 'How does the travel service inquiry work?',
+                'answer': 'Browse our destinations, vehicles, and tour guides. You can add any number of items into your "My Travel Inquiry" cart, specify your dates, passenger requirements, and preferred languages, and submit one consolidated inquiry or send it via WhatsApp.',
+                'display_order': 2,
+                'is_featured': True,
+            },
+            {
+                'category': 'general',
+                'question': 'Can we request tour guides who speak specific international languages?',
+                'answer': 'Yes. We provide certified multilingual guides proficient in English, French, German, Spanish, Italian, Japanese, Russian, Chinese, Arabic, and Hindi with verifiable credentials.',
+                'display_order': 3,
+                'is_featured': True,
+            },
+            {
+                'category': 'booking',
+                'question': 'Are vehicle and guide prices fixed or negotiable?',
+                'answer': 'Displayed prices are indicative estimates in INR (and converted into USD, EUR, GBP). Final quotations are provided transparently based on your exact itinerary, route mileage, travel dates, and toll/parking inclusions without hidden surcharges.',
+                'display_order': 4,
+                'is_featured': True,
+            },
+        ]
+        for f_data in faqs_seed:
+            FAQ.objects.update_or_create(
+                question=f_data['question'],
+                defaults=f_data
+            )
+        self.stdout.write(self.style.SUCCESS("Created FAQs"))
+
+        self.stdout.write(self.style.SUCCESS("Database seeding completed successfully!"))

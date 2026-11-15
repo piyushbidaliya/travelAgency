@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
-import { useTrip } from '@/lib/trip-context';
+import { useInquiry } from '@/lib/inquiry-context';
 
 export const WhatsAppFloatingButton: React.FC = () => {
   const [showTooltip, setShowTooltip] = useState(false);
-  const { totalSelectedCount, generateWhatsAppLink } = useTrip();
+  const { totalSelectedCount, generateWhatsAppLink } = useInquiry();
 
   // WhatsApp link generation handles customized trip payload or standard greeting
   const targetLink = generateWhatsAppLink('919876543210');

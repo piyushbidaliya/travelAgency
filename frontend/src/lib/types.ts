@@ -1,95 +1,84 @@
-export type RegionSlug = 'north' | 'south' | 'east' | 'west';
-
-export interface Region {
-  id: number;
-  name: 'north' | 'south' | 'east' | 'west';
-  slug: string;
-  title: string;
-  tagline: string;
-  description: string;
-  hero_image?: string;
-  best_time_to_visit: string;
-  popular_experiences: string[];
-  destinations_count?: number;
-}
-
-export interface DestinationImage {
-  id: number;
-  image: string;
-  alt_text: string;
-  is_primary: boolean;
-}
-
-export interface Destination {
+export interface VehicleCategory {
   id: number;
   name: string;
   slug: string;
+  description: string;
+  display_order: number;
+  vehicles_count?: number;
+}
+
+export interface Vehicle {
+  id: number;
+  name: string;
+  slug: string;
+  brand: string;
+  model_name: string;
+  category_name: string;
+  category_slug: string;
+  featured_image: string;
+  images?: { id: number; image: string; alt_text: string; is_primary: boolean }[];
+  seating_capacity: number;
+  luggage_capacity: number;
+  is_air_conditioned: boolean;
+  facilities: string[];
+  description: string;
+  price_inr?: number;
+  pricing_unit: string;
+  availability_status: 'available' | 'on_request' | 'limited';
+  is_featured: boolean;
+}
+
+export interface Language {
+  id: number;
+  name: string;
+  code: string;
+  is_active: boolean;
+  display_order?: number;
+}
+
+export interface GuideLanguage {
+  id: number;
+  language?: number;
+  language_name: string;
+  language_code: string;
+  proficiency?: 'native' | 'fluent' | 'professional' | 'conversational';
+  proficiency_display?: string;
+  proficiency_level?: string;
+}
+
+export interface GuideCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  display_order?: number;
+}
+
+export interface Guide {
+  id: number;
+  full_name: string;
+  name: string;
+  slug: string;
+  category_name: string;
+  category_slug: string;
+  profile_photo: string;
+  short_intro: string;
+  bio: string;
+  biography?: string;
+  years_of_experience: number;
+  languages: GuideLanguage[];
+  areas_of_expertise: string[];
+  specializations: string[];
+  price_inr?: number;
+  pricing_unit: string;
+  availability_status: 'available' | 'on_request' | 'limited';
+  certifications?: string;
+  license_number: string;
+  primary_city: string;
   state: string;
-  region_name: string;
-  region_slug: RegionSlug;
-  short_description: string;
-  detailed_description?: string;
-  best_time_to_visit: string;
-  recommended_duration: string;
-  main_attractions?: string[];
-  activities?: string[];
-  local_experiences?: string[];
-  travel_tips?: string[];
-  travel_styles: string[];
-  ideal_seasons: string[];
-  primary_image?: DestinationImage;
-  images?: DestinationImage[];
+  rating: number;
+  reviews_count: number;
   is_featured: boolean;
-}
-
-export interface TourPackage {
-  id: number;
-  name: string;
-  slug: string;
-  region_name?: string;
-  featured_image?: string;
-  short_description: string;
-  detailed_description?: string;
-  duration_days: number;
-  duration_nights: number;
-  starting_price_inr: number;
-  base_currency: string;
-  best_time_to_visit: string;
-  tour_highlights: string[];
-  inclusions?: string[];
-  exclusions?: string[];
-  accommodation_info?: string;
-  transportation_info?: string;
-  travel_category: string;
-  travel_style: string;
-  is_featured: boolean;
-  destinations: Destination[];
-}
-
-export interface ItineraryDay {
-  id: number;
-  day_number: number;
-  title: string;
-  destination_name?: string;
-  description: string;
-  activities: string[];
-  accommodation: string;
-  meals: string;
-  transport_info: string;
-}
-
-export interface Itinerary {
-  id: number;
-  title: string;
-  slug: string;
-  duration_days: number;
-  duration_nights: number;
-  overview: string;
-  best_time_to_visit: string;
-  total_distance_km?: number;
-  is_featured: boolean;
-  destinations: Destination[];
-  days?: ItineraryDay[];
 }
 
 export interface Testimonial {
@@ -122,12 +111,19 @@ export interface CurrencyRates {
   };
 }
 
-export interface TripPlannerItem {
-  id: number;
-  type: 'destination' | 'package';
-  name: string;
-  slug: string;
-  region?: string;
-  duration?: string;
-  image?: string;
+export interface InquiryPlanState {
+  vehicles: Vehicle[];
+  guides: Guide[];
+  preferredLanguages: Language[];
+  startDate: string;
+  endDate: string;
+  flexibleDates: boolean;
+  adultsCount: number;
+  childrenCount: number;
+  pickupLocation: string;
+  dropoffLocation: string;
+  preferredVehicleCategory: string;
+  vehiclesCountRequired: number;
+  specialRequirements: string;
+  customMessage: string;
 }

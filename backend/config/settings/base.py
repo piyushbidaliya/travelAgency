@@ -32,11 +32,10 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'apps.website_settings',
-    'apps.destinations',
-    'apps.packages',
-    'apps.itineraries',
+    'apps.vehicles',
+    'apps.guides',
+    'apps.languages',
     'apps.inquiries',
-    'apps.trip_planner',
     'apps.currency',
     'apps.testimonials',
     'apps.faqs',
@@ -76,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
-# Database configuration: defaults to MySQL, with graceful SQLite fallback for testing/offline dev
+# Database configuration
 DB_NAME = os.getenv('DB_NAME', 'india_tour_db')
 DB_USER = os.getenv('DB_USER', 'tour_user')
 DB_PASSWORD = os.getenv('DB_PASSWORD', 'change_me_strong_password')

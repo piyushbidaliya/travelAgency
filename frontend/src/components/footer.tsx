@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Compass, Phone, Mail, MapPin, MessageSquare, ShieldCheck, Heart } from 'lucide-react';
+import { Compass, Phone, Mail, MapPin, MessageSquare, ShieldCheck } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -19,86 +19,86 @@ export const Footer: React.FC = () => {
                   Namaste Journeys
                 </span>
                 <span className="text-[10px] tracking-widest text-primary-300 uppercase block font-sans">
-                  Extraordinary India
+                  Chauffeured Vehicles & Tour Guides
                 </span>
               </div>
             </Link>
 
             <p className="text-sm text-stone-400 leading-relaxed max-w-sm font-sans">
-              Dedicated to crafting bespoke, private, and highly authentic journeys across India for discerning international travelers. Experience majestic palaces, sacred traditions, pristine backwaters, and untamed wilderness with private chauffeured luxury.
+              Dedicated to providing verified tourist vehicles with courteous chauffeurs and licensed multilingual tour guides for international travelers across India.
             </p>
 
             <div className="pt-2 flex items-center gap-4 text-stone-400 text-sm">
               <span className="flex items-center gap-1.5 text-xs text-primary-300">
                 <ShieldCheck className="w-4 h-4 text-primary-400" />
-                Verified Local Chauffeurs & Historians
+                Verified Chauffeurs & Licensed Guides
               </span>
             </div>
           </div>
 
-          {/* Regional Destinations */}
+          {/* Tourist Vehicles */}
           <div>
             <h4 className="text-xs uppercase font-bold tracking-widest text-white mb-4 border-b border-white/10 pb-2">
-              Regions of India
+              Tourist Vehicles
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/destinations/north-india" className="hover:text-primary-400 transition-colors">
-                  North India (Rajasthan & Delhi)
+                <Link href="/vehicles" className="hover:text-primary-400 transition-colors">
+                  All Tourist Vehicles
                 </Link>
               </li>
               <li>
-                <Link href="/destinations/south-india" className="hover:text-primary-400 transition-colors">
-                  South India (Kerala & Hampi)
+                <Link href="/vehicles?category=suv" className="hover:text-primary-400 transition-colors">
+                  Luxury SUVs & Fortuners
                 </Link>
               </li>
               <li>
-                <Link href="/destinations/east-india" className="hover:text-primary-400 transition-colors">
-                  East India (Sikkim & Kolkata)
+                <Link href="/vehicles?category=muv" className="hover:text-primary-400 transition-colors">
+                  Toyota Innova Crysta
                 </Link>
               </li>
               <li>
-                <Link href="/destinations/west-india" className="hover:text-primary-400 transition-colors">
-                  West India (Goa, Mumbai & Kutch)
+                <Link href="/vehicles?category=tempo-traveller" className="hover:text-primary-400 transition-colors">
+                  Tempo Travellers & Vans
                 </Link>
               </li>
               <li>
-                <Link href="/destinations" className="text-primary-400 hover:text-primary-300 font-medium">
-                  All 50+ Destinations &rarr;
+                <Link href="/vehicles?category=luxury-cars" className="hover:text-primary-400 transition-colors">
+                  Executive & Luxury Sedans
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Quick Links */}
+          {/* Tour Guides */}
           <div>
             <h4 className="text-xs uppercase font-bold tracking-widest text-white mb-4 border-b border-white/10 pb-2">
-              Explore Journeys
+              Tour Guides
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/packages" className="hover:text-primary-400 transition-colors">
-                  Curated Tour Packages
+                <Link href="/guides" className="hover:text-primary-400 transition-colors">
+                  All Licensed Guides
                 </Link>
               </li>
               <li>
-                <Link href="/itineraries" className="hover:text-primary-400 transition-colors">
-                  Recommended Itineraries
+                <Link href="/guides/french-speaking-guides" className="hover:text-primary-400 transition-colors">
+                  French Speaking Guides
                 </Link>
               </li>
               <li>
-                <Link href="/my-trip" className="hover:text-primary-400 transition-colors text-primary-400 font-semibold">
-                  Build Your Own Trip
+                <Link href="/guides/german-speaking-guides" className="hover:text-primary-400 transition-colors">
+                  German Speaking Guides
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-primary-400 transition-colors">
-                  About Our Company
+                <Link href="/guides/spanish-speaking-guides" className="hover:text-primary-400 transition-colors">
+                  Spanish Speaking Guides
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-primary-400 transition-colors">
-                  Contact Our Concierge
+                <Link href="/my-inquiry" className="hover:text-primary-400 transition-colors text-primary-400 font-semibold">
+                  Custom Travel Inquiry &rarr;
                 </Link>
               </li>
             </ul>
@@ -144,7 +144,7 @@ export const Footer: React.FC = () => {
         {/* Currency & Financial Clarification Notice */}
         <div className="py-6 border-b border-white/10 text-xs text-stone-400 leading-relaxed">
           <p>
-            <strong>Financial Notice:</strong> All package prices are primarily established in Indian Rupees (INR). Converted prices shown in USD ($), EUR (€), and GBP (£) are indicative estimates calculated via live exchange rates. Final quotations are subject to mutual confirmation upon itinerary finalization.
+            <strong>Financial Notice:</strong> All service estimates are primarily established in Indian Rupees (INR). Converted prices shown in USD ($), EUR (€), and GBP (£) are indicative estimates calculated via live exchange rates. Final quotations are provided transparently based on your exact itinerary, route mileage, travel dates, and toll/parking inclusions.
           </p>
         </div>
 

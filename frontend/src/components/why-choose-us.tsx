@@ -10,8 +10,8 @@ export const WhyChooseUs: React.FC = () => {
     },
     {
       icon: Compass,
-      title: 'Handpicked Heritage Stays',
-      desc: 'We curate authentic 5-star palace hotels, colonial tea bungalows, and boutique sanctuaries inspected for international comfort.',
+      title: 'Sanitized & Verified Fleet',
+      desc: 'Modern air-conditioned tourist vehicles, commercial permits, high-capacity carriers, and GPS tracking inspected for international comfort.',
     },
     {
       icon: HeartHandshake,

@@ -1,9 +1,7 @@
 import React from 'react';
 import { Hero } from '@/components/hero';
-import { RegionDiscovery } from '@/components/region-discovery';
-import { FeaturedDestinations } from '@/components/featured-destinations';
-import { PopularPackages } from '@/components/popular-packages';
-import { RecommendedItineraries } from '@/components/recommended-itineraries';
+import { VehiclesPreview } from '@/components/vehicles-preview';
+import { GuidesPreview } from '@/components/guides-preview';
 import { ExperiencesSection } from '@/components/experiences';
 import { WhyChooseUs } from '@/components/why-choose-us';
 import { HowItWorks } from '@/components/how-it-works';
@@ -17,34 +15,28 @@ export default function HomePage() {
       {/* 1. Cinematic Hero Section */}
       <Hero />
 
-      {/* 2. Destination Discovery: Explore India by Region */}
-      <RegionDiscovery />
+      {/* 2. Tourist Vehicles Discovery Preview */}
+      <VehiclesPreview />
 
-      {/* 3. Featured Destinations */}
-      <FeaturedDestinations />
+      {/* 3. Professional Tour Guides Discovery Preview */}
+      <GuidesPreview />
 
-      {/* 4. Popular Travel Packages */}
-      <PopularPackages />
-
-      {/* 5. Recommended Itineraries */}
-      <RecommendedItineraries />
-
-      {/* 6. Special Travel Experiences */}
+      {/* 4. Special Travel Experiences */}
       <ExperiencesSection />
 
-      {/* 7. Why Choose Us */}
+      {/* 5. Why Choose Us */}
       <WhyChooseUs />
 
-      {/* 8. How Travel Planning Works */}
+      {/* 6. How Travel Planning Works */}
       <HowItWorks />
 
-      {/* 9. Genuine Customer Testimonials */}
+      {/* 7. Genuine Customer Testimonials */}
       <TestimonialsSection />
 
-      {/* 10. Frequently Asked Questions */}
+      {/* 8. Frequently Asked Questions */}
       <FAQSection />
 
-      {/* 11. Plan Your Journey CTA */}
+      {/* 9. Plan Your Journey CTA */}
       <PlanJourneyCTA />
     </>
   );

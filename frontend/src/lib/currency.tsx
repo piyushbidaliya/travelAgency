@@ -8,7 +8,8 @@ interface CurrencyContextType {
   currency: SupportedCurrency;
   setCurrency: (c: SupportedCurrency) => void;
   rates: CurrencyRates;
-  convertAndFormat: (amountInINR: number) => string;
+  convertAndFormat: (amountInINR?: number | null) => string;
+  formatPrice: (amountInINR?: number | null) => string;
   isEstimate: boolean;
   lastUpdated: string;
 }
@@ -25,6 +26,7 @@ const CurrencyContext = createContext<CurrencyContextType>({
   setCurrency: () => {},
   rates: DEFAULT_RATES,
   convertAndFormat: () => '',
+  formatPrice: () => '',
   isEstimate: true,
   lastUpdated: '',
 });
@@ -64,7 +66,8 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     localStorage.setItem('user_currency', c);
   };
 
-  const convertAndFormat = (amountInINR: number) => {
+  const convertAndFormat = (amountInINR?: number | null) => {
+    if (!amountInINR || amountInINR <= 0) return 'Quote on Request';
     return formatCurrency(amountInINR, currency, rates);
   };
 
@@ -75,6 +78,7 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setCurrency,
         rates,
         convertAndFormat,
+        formatPrice: convertAndFormat,
         isEstimate: currency !== 'INR',
         lastUpdated,
       }}

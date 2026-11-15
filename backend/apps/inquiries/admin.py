@@ -1,12 +1,16 @@
 from django.contrib import admin
-from .models import Inquiry, InquiryDestination, InquiryPackage, InquiryNote
+from .models import Inquiry, InquiryVehicle, InquiryGuide, InquiryLanguage, InquiryNote
 
-class InquiryDestinationInline(admin.TabularInline):
-    model = InquiryDestination
+class InquiryVehicleInline(admin.TabularInline):
+    model = InquiryVehicle
     extra = 0
 
-class InquiryPackageInline(admin.TabularInline):
-    model = InquiryPackage
+class InquiryGuideInline(admin.TabularInline):
+    model = InquiryGuide
+    extra = 0
+
+class InquiryLanguageInline(admin.TabularInline):
+    model = InquiryLanguage
     extra = 0
 
 class InquiryNoteInline(admin.StackedInline):
@@ -19,4 +23,4 @@ class InquiryAdmin(admin.ModelAdmin):
     list_filter = ('status', 'preferred_region', 'created_at')
     search_fields = ('reference_code', 'full_name', 'email', 'phone_number')
     readonly_fields = ('reference_code', 'created_at', 'updated_at')
-    inlines = [InquiryDestinationInline, InquiryPackageInline, InquiryNoteInline]
+    inlines = [InquiryVehicleInline, InquiryGuideInline, InquiryLanguageInline, InquiryNoteInline]

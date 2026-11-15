@@ -14,7 +14,7 @@ export default function NotFound() {
           Journey Off the Beaten Track
         </h2>
         <p className="text-sm text-stone-300 mb-8 leading-relaxed">
-          The sanctuary or destination route you are looking for does not exist or has moved. Let us guide you back to familiar lands.
+          The page or travel service route you are looking for does not exist or has moved. Let us guide you back to familiar lands.
         </p>
         <Link
           href="/"

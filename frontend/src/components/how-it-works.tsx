@@ -6,20 +6,20 @@ export const HowItWorks: React.FC = () => {
   const steps = [
     {
       num: '01',
-      title: 'Select Your Dream Destinations',
-      desc: 'Browse our regional guides across North, South, East, and West India. Add destinations or signature packages into your "My Trip" planner with one click.',
+      title: 'Explore Chauffeured Vehicles',
+      desc: 'Browse sanitized tourist sedans, luxury 4x4 SUVs, executive Mercedes, and tempo travellers tailored to your party size and luggage.',
       icon: MousePointerClick,
     },
     {
       num: '02',
-      title: 'Personalize with a Travel Specialist',
-      desc: 'Submit your trip preferences or reach us on WhatsApp. Our private India journey planner calibrates driving times, selects luxury hotels, and shares a day-wise proposal.',
+      title: 'Select Licensed Tour Guides',
+      desc: 'Choose certified regional historians, wildlife naturalists, and cultural guides fluent in your preferred international language.',
       icon: MessageSquareHeart,
     },
     {
       num: '03',
-      title: 'Arrive and Explore Effortlessly',
-      desc: 'Upon landing, your dedicated chauffeur and private sedan receive you at the airport. Enjoy 24/7 concierge assistance throughout your extraordinary Indian expedition.',
+      title: 'Send One Consolidated Inquiry',
+      desc: 'Submit your complete inquiry or connect instantly on WhatsApp. Our travel concierge responds promptly with confirmed vehicle availability and custom pricing.',
       icon: CheckCircle,
     },
   ];
@@ -75,10 +75,10 @@ export const HowItWorks: React.FC = () => {
         {/* Action Button */}
         <div className="mt-14 text-center">
           <Link
-            href="/my-trip"
+            href="/my-inquiry"
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold text-xs tracking-wider uppercase shadow-gold-glow transition-all"
           >
-            <span>Start Planning Your Trip Now</span>
+            <span>Start Your Travel Inquiry</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

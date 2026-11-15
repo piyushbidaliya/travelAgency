@@ -1,8 +1,9 @@
 import uuid
 from django.db import models
-from apps.destinations.models import Destination
-from apps.packages.models import TourPackage
 from django.contrib.auth import get_user_model
+from apps.vehicles.models import Vehicle
+from apps.guides.models import Guide
+from apps.languages.models import Language
 
 User = get_user_model()
 
@@ -25,22 +26,32 @@ class Inquiry(models.Model):
     phone_number = models.CharField(max_length=30)
     calling_code = models.CharField(max_length=10, default='+1')
     
-    # Trip Details
+    # Travel Dates & Party
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    flexible_dates = models.BooleanField(default=False)
     adults_count = models.PositiveSmallIntegerField(default=2)
     children_count = models.PositiveSmallIntegerField(default=0)
-    start_date = models.DateField(null=True, blank=True)
-    flexible_dates = models.BooleanField(default=False)
-    duration_days = models.PositiveSmallIntegerField(null=True, blank=True)
+    pickup_location = models.CharField(max_length=200, blank=True, help_text="e.g. Delhi Airport / Hotel")
+    dropoff_location = models.CharField(max_length=200, blank=True, help_text="e.g. Mumbai Airport")
     preferred_region = models.CharField(max_length=100, blank=True)
     
-    # Selections
-    destinations = models.ManyToManyField(Destination, blank=True, through='InquiryDestination')
-    packages = models.ManyToManyField(TourPackage, blank=True, through='InquiryPackage')
+    # Relational Service Selections
+    vehicles = models.ManyToManyField(Vehicle, blank=True, through='InquiryVehicle')
+    guides = models.ManyToManyField(Guide, blank=True, through='InquiryGuide')
+    languages = models.ManyToManyField(Language, blank=True, through='InquiryLanguage')
     
-    # Preferences & Financial
+    # Service Specifications
+    preferred_vehicle_categories = models.JSONField(default=list, blank=True)
+    vehicles_count_required = models.PositiveSmallIntegerField(default=1)
+    special_transport_requirements = models.TextField(blank=True)
+    
+    guide_specialization_requested = models.CharField(max_length=200, blank=True)
+    guide_proficiency_requested = models.CharField(max_length=50, blank=True)
+    
+    # Financial & Notes
     travel_budget = models.CharField(max_length=100, blank=True)
     preferred_currency = models.CharField(max_length=10, default='USD')
-    travel_style = models.CharField(max_length=100, blank=True)
     special_requirements = models.TextField(blank=True)
     message = models.TextField(blank=True)
     
@@ -64,21 +75,28 @@ class Inquiry(models.Model):
     def __str__(self):
         return f"{self.reference_code} - {self.full_name}"
 
-class InquiryDestination(models.Model):
+class InquiryVehicle(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
-    destination = models.ForeignKey(Destination, on_delete=models.CASCADE)
-    visit_order = models.PositiveIntegerField(default=1)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
-        ordering = ['visit_order']
-        unique_together = ('inquiry', 'destination')
+        unique_together = ('inquiry', 'vehicle')
 
-class InquiryPackage(models.Model):
+class InquiryGuide(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
-    package = models.ForeignKey(TourPackage, on_delete=models.CASCADE)
+    guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('inquiry', 'package')
+        unique_together = ('inquiry', 'guide')
+
+class InquiryLanguage(models.Model):
+    inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    preferred_proficiency = models.CharField(max_length=50, blank=True)
+
+    class Meta:
+        unique_together = ('inquiry', 'language')
 
 class InquiryNote(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, related_name='notes')

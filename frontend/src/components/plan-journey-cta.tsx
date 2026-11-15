@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Compass, MessageSquare, ArrowRight } from 'lucide-react';
+import { ClipboardList, MessageSquare, ArrowRight } from 'lucide-react';
 
 export const PlanJourneyCTA: React.FC = () => {
   return (
@@ -20,24 +20,24 @@ export const PlanJourneyCTA: React.FC = () => {
         </p>
 
         <h2 className="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight mb-6">
-          Ready to Craft an Unforgettable Journey?
+          Ready to Plan Your Indian Journey?
         </h2>
 
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-stone-300 font-sans leading-relaxed mb-10">
-          Whether you have a precise itinerary in mind or simply an aspiration to explore India’s most magnificent regions, our private specialists are here to design every detail.
+          Select your private chauffeured vehicles and licensed multilingual tour guides. Send one consolidated inquiry and let our team manage every detail with excellence.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            href="/my-trip"
+            href="/my-inquiry"
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 hover:from-primary-600 hover:to-primary-800 text-white font-semibold text-xs tracking-wider uppercase shadow-gold-glow flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
           >
-            <Compass className="w-4 h-4" />
-            <span>Open Trip Planner</span>
+            <ClipboardList className="w-4 h-4" />
+            <span>Review Travel Inquiry</span>
           </Link>
 
           <a
-            href="https://wa.me/919876543210?text=Hello%20Namaste%20Journeys%2C%20I%20would%20like%20to%20plan%20a%20luxury%20tour%20to%20India."
+            href="https://wa.me/919876543210?text=Hello%20Namaste%20Journeys%2C%20I%20would%20like%20to%20inquire%20about%20travel%20services%20in%20India."
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all"
