@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageSquare, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useInquiry } from '@/lib/inquiry-context';
+import { FaWhatsapp } from 'react-icons/fa6';
 
 export const WhatsAppFloatingButton: React.FC = () => {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -12,10 +13,10 @@ export const WhatsAppFloatingButton: React.FC = () => {
   const targetLink = generateWhatsAppLink('919876543210');
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex items-end flex-col">
-      {/* Popover helper bubble */}
+    <div className="fixed bottom-6 right-6 z-40 flex items-center">
+      {/* Popover helper bubble positioned to the left */}
       {showTooltip && (
-        <div className="mb-3 p-3 bg-luxury-dark/95 backdrop-blur-md text-white rounded-xl shadow-2xl border border-white/15 max-w-xs animate-in fade-in slide-in-from-bottom duration-200">
+        <div className="mr-3 p-3 bg-luxury-dark/95 backdrop-blur-md text-white rounded-xl shadow-2xl border border-white/15 w-64 animate-in fade-in slide-in-from-right-2 duration-200">
           <div className="flex items-center justify-between gap-3 mb-1">
             <span className="text-xs font-bold text-emerald-400">Direct Travel Specialist</span>
             <button
@@ -43,7 +44,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
         className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"
         aria-label="Chat on WhatsApp with India Travel Specialist"
       >
-        <MessageSquare className="w-7 h-7" />
+        <FaWhatsapp className="w-7 h-7" />
 
         {/* Counter Badge if user has trip items selected */}
         {totalSelectedCount > 0 && (

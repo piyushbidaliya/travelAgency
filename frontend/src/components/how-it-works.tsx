@@ -12,8 +12,8 @@ export const HowItWorks: React.FC = () => {
     },
     {
       num: '02',
-      title: 'Select Licensed Tour Guides',
-      desc: 'Choose certified regional historians, wildlife naturalists, and cultural guides fluent in your preferred international language.',
+      title: 'Specify Route & Travel Dates',
+      desc: 'Tell us your preferred travel dates, pickup points, destinations, and custom preferences for a completely tailored itinerary.',
       icon: MessageSquareHeart,
     },
     {

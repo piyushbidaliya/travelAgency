@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { Compass, Phone, Mail, MapPin, MessageSquare, ShieldCheck } from 'lucide-react';
+import { Compass, Phone, Mail, MapPin, ShieldCheck } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 
 export const Footer: React.FC = () => {
   return (
@@ -19,19 +20,19 @@ export const Footer: React.FC = () => {
                   Namaste Journeys
                 </span>
                 <span className="text-[10px] tracking-widest text-primary-300 uppercase block font-sans">
-                  Chauffeured Vehicles & Tour Guides
+                  Chauffeured Tourist Vehicles
                 </span>
               </div>
             </Link>
 
             <p className="text-sm text-stone-400 leading-relaxed max-w-sm font-sans">
-              Dedicated to providing verified tourist vehicles with courteous chauffeurs and licensed multilingual tour guides for international travelers across India.
+              Dedicated to providing verified tourist vehicles with courteous chauffeurs for international travelers across India.
             </p>
 
             <div className="pt-2 flex items-center gap-4 text-stone-400 text-sm">
               <span className="flex items-center gap-1.5 text-xs text-primary-300">
                 <ShieldCheck className="w-4 h-4 text-primary-400" />
-                Verified Chauffeurs & Licensed Guides
+                Verified Chauffeurs & Commercial Permits
               </span>
             </div>
           </div>
@@ -70,30 +71,25 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Tour Guides */}
+          {/* Quick Links */}
           <div>
             <h4 className="text-xs uppercase font-bold tracking-widest text-white mb-4 border-b border-white/10 pb-2">
-              Tour Guides
+              Quick Links
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/guides" className="hover:text-primary-400 transition-colors">
-                  All Licensed Guides
+                <Link href="/vehicles" className="hover:text-primary-400 transition-colors">
+                  Fleet Discovery
                 </Link>
               </li>
               <li>
-                <Link href="/guides/french-speaking-guides" className="hover:text-primary-400 transition-colors">
-                  French Speaking Guides
+                <Link href="/about" className="hover:text-primary-400 transition-colors">
+                  About Namaste Journeys
                 </Link>
               </li>
               <li>
-                <Link href="/guides/german-speaking-guides" className="hover:text-primary-400 transition-colors">
-                  German Speaking Guides
-                </Link>
-              </li>
-              <li>
-                <Link href="/guides/spanish-speaking-guides" className="hover:text-primary-400 transition-colors">
-                  Spanish Speaking Guides
+                <Link href="/my-inquiry" className="hover:text-primary-400 transition-colors">
+                  Travel Inquiry & Concierge Desk
                 </Link>
               </li>
               <li>
@@ -121,7 +117,7 @@ export const Footer: React.FC = () => {
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
-                <MessageSquare className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <FaWhatsapp className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <a
                   href="https://wa.me/919876543210"
                   target="_blank"

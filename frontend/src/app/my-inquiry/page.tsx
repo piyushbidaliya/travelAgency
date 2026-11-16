@@ -3,9 +3,9 @@ import { Metadata } from 'next';
 import { InquiryClient } from './inquiry-client';
 
 export const metadata: Metadata = {
-  title: 'My Travel Inquiry | Review Selected Destinations, Vehicles & Tour Guides',
+  title: 'Travel Inquiry & Concierge Desk | Namaste Journeys India',
   description:
-    'Review your consolidated travel inquiry for India. Select destinations, tourist vehicles, licensed multilingual guides, and send directly to our travel concierge or via WhatsApp.',
+    'Plan and submit your private India travel inquiry. Chauffeured tourist vehicles, optional local monument tour guides, and personalized itinerary support from our New Delhi concierge desk.',
 };
 
 export default function MyInquiryPage() {
@@ -18,10 +18,10 @@ export default function MyInquiryPage() {
             Consolidated Travel Concierge
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight mb-4">
-            My Travel Inquiry
+            Travel Inquiry & Concierge Desk
           </h1>
           <p className="max-w-2xl mx-auto text-stone-300 text-sm sm:text-base leading-relaxed font-light">
-            Review your selected destinations, tourist vehicles, and tour guides. Send your inquiry directly to our team for a tailored proposal and guaranteed availability.
+            Review your selected tourist vehicles or request customized transport with optional monument tour guides. Our concierge desk is at your service.
           </p>
         </div>
       </section>

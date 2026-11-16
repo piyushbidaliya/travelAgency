@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Vehicle, VehicleCategory } from '@/lib/types';
 import { useCurrency } from '@/lib/currency';
 import { useInquiry } from '@/lib/inquiry-context';
@@ -26,6 +27,7 @@ interface VehiclesClientProps {
 }
 
 export const VehiclesClient: React.FC<VehiclesClientProps> = ({ categories, vehicles }) => {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedCapacity, setSelectedCapacity] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -142,7 +144,7 @@ export const VehiclesClient: React.FC<VehiclesClientProps> = ({ categories, vehi
           href="/my-inquiry"
           className="whitespace-nowrap px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors flex items-center gap-1.5 self-start sm:self-auto"
         >
-          <span>View My Inquiry ({inquiry.vehicles.length} Vehicles)</span>
+          <span>{inquiry.vehicles.length > 0 ? `My Inquiry (${inquiry.vehicles.length})` : 'Enquire Now'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
@@ -177,8 +179,11 @@ export const VehiclesClient: React.FC<VehiclesClientProps> = ({ categories, vehi
                 key={vehicle.id}
                 className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
               >
-                {/* Image */}
-                <div className="relative h-56 w-full overflow-hidden bg-stone-100">
+                {/* Image (Clickable - redirects to vehicle spec page) */}
+                <Link
+                  href={`/vehicles/${vehicle.slug}`}
+                  className="block relative h-56 w-full overflow-hidden bg-stone-100 cursor-pointer"
+                >
                   <Image
                     src={vehicle.featured_image}
                     alt={vehicle.name}
@@ -196,7 +201,7 @@ export const VehiclesClient: React.FC<VehiclesClientProps> = ({ categories, vehi
                       </span>
                     )}
                   </div>
-                </div>
+                </Link>
 
                 {/* Body Content */}
                 <div className="p-6 flex-1 flex flex-col justify-between">
@@ -257,22 +262,21 @@ export const VehiclesClient: React.FC<VehiclesClientProps> = ({ categories, vehi
                     <button
                       type="button"
                       onClick={() => {
-                        if (isSelected) {
-                          removeVehicle(vehicle.id);
-                        } else {
+                        if (!isSelected) {
                           addVehicle(vehicle);
                         }
+                        router.push('/my-inquiry');
                       }}
                       className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                         isSelected
-                          ? 'bg-emerald-600 text-white shadow-sm'
+                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
                           : 'bg-primary-600 hover:bg-primary-700 text-white'
                       }`}
                     >
                       {isSelected ? (
                         <>
                           <Check className="w-3.5 h-3.5" />
-                          <span>Vehicle Selected</span>
+                          <span>View in Inquiry</span>
                         </>
                       ) : (
                         <>
@@ -284,9 +288,10 @@ export const VehiclesClient: React.FC<VehiclesClientProps> = ({ categories, vehi
 
                     <Link
                       href={`/vehicles/${vehicle.slug}`}
-                      className="py-2.5 px-4 rounded-xl text-xs font-bold text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 transition-colors"
+                      className="py-2.5 px-3 rounded-xl text-xs font-semibold tracking-wider text-primary-950 bg-gradient-to-r from-amber-50 to-primary-100 hover:from-primary-600 hover:to-primary-700 hover:text-white border border-primary-300 hover:border-transparent transition-all duration-200 flex items-center gap-1.5 shadow-sm group whitespace-nowrap"
                     >
-                      Specs &rarr;
+                      <span>View Specs</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-primary-700 group-hover:text-white transition-transform duration-200 group-hover:translate-x-1" />
                     </Link>
                   </div>
                 </div>

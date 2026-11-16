@@ -1,7 +1,6 @@
 import React from 'react';
 import { Hero } from '@/components/hero';
 import { VehiclesPreview } from '@/components/vehicles-preview';
-import { GuidesPreview } from '@/components/guides-preview';
 import { ExperiencesSection } from '@/components/experiences';
 import { WhyChooseUs } from '@/components/why-choose-us';
 import { HowItWorks } from '@/components/how-it-works';
@@ -18,25 +17,22 @@ export default function HomePage() {
       {/* 2. Tourist Vehicles Discovery Preview */}
       <VehiclesPreview />
 
-      {/* 3. Professional Tour Guides Discovery Preview */}
-      <GuidesPreview />
-
-      {/* 4. Special Travel Experiences */}
+      {/* 3. Special Travel Experiences */}
       <ExperiencesSection />
 
-      {/* 5. Why Choose Us */}
+      {/* 4. Why Choose Us */}
       <WhyChooseUs />
 
-      {/* 6. How Travel Planning Works */}
+      {/* 5. How Travel Planning Works */}
       <HowItWorks />
 
-      {/* 7. Genuine Customer Testimonials */}
+      {/* 6. Genuine Customer Testimonials */}
       <TestimonialsSection />
 
-      {/* 8. Frequently Asked Questions */}
+      {/* 7. Frequently Asked Questions */}
       <FAQSection />
 
-      {/* 9. Plan Your Journey CTA */}
+      {/* 8. Plan Your Journey CTA */}
       <PlanJourneyCTA />
     </>
   );

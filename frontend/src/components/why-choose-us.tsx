@@ -30,8 +30,8 @@ export const WhyChooseUs: React.FC = () => {
     },
     {
       icon: Award,
-      title: 'Senior Cultural Historians',
-      desc: 'Private access to licensed ASI scholars who narrate India’s ancient empires with depth, passion, and nuance.',
+      title: 'Commercial Interstate Permits',
+      desc: 'All-India tourist transport permits with seamless state border clearances, authorized commercial licensing, and comprehensive insurance.',
     },
   ];
 

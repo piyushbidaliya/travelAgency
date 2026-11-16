@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Car, Users, Sparkles, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Car, Sparkles, ShieldCheck, Compass } from 'lucide-react';
 
 export const Hero: React.FC = () => {
   return (
@@ -23,7 +23,7 @@ export const Hero: React.FC = () => {
         {/* Subtitle pill badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-stone-200 text-xs tracking-widest uppercase mb-6 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-primary-400" />
-          <span>Premium Tourist Transport & Licensed Guides Across India</span>
+          <span>Chauffeured Tourist Vehicles &bull; Optional Tour Guides Across India</span>
         </div>
 
         {/* Master Headline */}
@@ -32,9 +32,17 @@ export const Hero: React.FC = () => {
         </h1>
 
         {/* Editorial Subtitle */}
-        <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-stone-200 font-sans leading-relaxed mb-10 font-light">
-          Bespoke travel services for international travelers. Discover sanitized tourist vehicles with dedicated chauffeurs and government-certified multilingual tour guides — combined into one transparent, consolidated inquiry.
+        <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-stone-200 font-sans leading-relaxed mb-6 font-light">
+          Bespoke private travel across India for international travelers. Discover sanitized tourist vehicles with dedicated chauffeurs — combined into one transparent, consolidated inquiry.
         </p>
+
+        {/* Guide Booking Highlight Callout */}
+        <div className="inline-flex items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-2xl bg-amber-500/15 border border-amber-400/40 text-amber-100 text-xs sm:text-sm font-medium backdrop-blur-md mb-9 shadow-sm max-w-xl mx-auto">
+          <Compass className="w-4 h-4 text-amber-300 flex-shrink-0" />
+          <span>
+            <strong className="text-white font-semibold">Book a Tour Guide Too:</strong> Request government-approved local guides for monuments in Delhi, Agra, Jaipur & beyond directly in your inquiry!
+          </span>
+        </div>
 
         {/* Primary Call to Action buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -48,18 +56,11 @@ export const Hero: React.FC = () => {
           </Link>
 
           <Link
-            href="/guides"
+            href="/my-inquiry"
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/25 font-semibold text-sm tracking-wider uppercase transition-all hover:border-white/40 flex items-center justify-center gap-2.5 hover:scale-105 active:scale-95"
           >
-            <Users className="w-4 h-4 text-primary-300" />
-            <span>Explore Tour Guides</span>
-          </Link>
-
-          <Link
-            href="/my-inquiry"
-            className="w-full sm:w-auto px-6 py-4 rounded-xl bg-stone-900/60 hover:bg-stone-900/90 text-stone-300 hover:text-white border border-white/15 font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2"
-          >
-            <span>Custom Inquiry</span>
+            <span>Plan & Enquire</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -70,16 +71,16 @@ export const Hero: React.FC = () => {
             <span>Verified Professional Chauffeurs</span>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary-400" />
-            <span>Ministry-Certified Guides</span>
+            <Compass className="w-4 h-4 text-amber-400" />
+            <span>Optional Monument Tour Guides</span>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-400" />
-            <span>11+ International Languages</span>
+            <span className="w-2 h-2 rounded-full bg-primary-400" />
+            <span>Interstate Commercial Permits</span>
           </div>
           <div className="flex items-center justify-center gap-2">
             <span className="w-2 h-2 rounded-full bg-sky-400" />
-            <span>Transparent Pricing & Inquiries</span>
+            <span>Transparent Inquiries & Pricing</span>
           </div>
         </div>
       </div>

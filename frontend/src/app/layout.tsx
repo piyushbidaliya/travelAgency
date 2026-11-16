@@ -5,26 +5,26 @@ import { InquiryProvider } from '@/lib/inquiry-context';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { WhatsAppFloatingButton } from '@/components/whatsapp-button';
+import { EmailFloatingButton } from '@/components/email-button';
 
 export const metadata: Metadata = {
-  title: 'Namaste Journeys | Discover the Extraordinary India | Tourist Vehicles & Licensed Guides',
+  title: 'Namaste Journeys | Discover the Extraordinary India | Chauffeured Tourist Vehicles',
   description:
-    'Private travel services across India for international visitors. Chauffeured tourist vehicles (sedans, SUVs, luxury cars, tempo travellers) and government-licensed multilingual tour guides across North, South, East, and West India.',
+    'Private travel services across India for international visitors. Chauffeured tourist vehicles (sedans, SUVs, luxury cars, tempo travellers) with professional English-speaking chauffeurs across North, South, East, and West India.',
   keywords: [
     'India private tourist driver and car',
-    'India licensed tour guides',
-    'French speaking guide India',
-    'German speaking guide India',
-    'Spanish speaking guide India',
+    'India chauffeured tourist vehicles',
     'Chauffeured Innova hire India',
+    'Luxury tempo traveller rental India',
     'Custom India travel inquiry',
+    'Private car hire India with driver',
   ],
   authors: [{ name: 'Namaste Journeys' }],
   metadataBase: new URL('https://www.namastejourneys.com'),
   openGraph: {
     title: 'Discover the Extraordinary India | Namaste Journeys',
     description:
-      'Curated private travel services, chauffeured tourist vehicles, and licensed multilingual tour guides across India.',
+      'Curated private travel services and chauffeured tourist vehicles across India.',
     siteName: 'Namaste Journeys',
     locale: 'en_US',
     type: 'website',
@@ -80,6 +80,7 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
+            <EmailFloatingButton />
             <WhatsAppFloatingButton />
           </InquiryProvider>
         </CurrencyProvider>

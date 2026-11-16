@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Car, Users, Luggage, Snowflake, ShieldCheck, Check, Plus, ArrowRight } from 'lucide-react';
 import { VEHICLES_DATA } from '@/lib/mock-data';
 import { useCurrency } from '@/lib/currency';
@@ -10,6 +11,7 @@ import { useInquiry } from '@/lib/inquiry-context';
 import { Vehicle } from '@/lib/types';
 
 export const VehiclesPreview: React.FC = () => {
+  const router = useRouter();
   const { formatPrice } = useCurrency();
   const { inquiry, addVehicle, removeVehicle } = useInquiry();
 
@@ -21,11 +23,10 @@ export const VehiclesPreview: React.FC = () => {
   };
 
   const handleToggleVehicle = (vehicle: Vehicle) => {
-    if (isVehicleSelected(vehicle.id)) {
-      removeVehicle(vehicle.id);
-    } else {
+    if (!isVehicleSelected(vehicle.id)) {
       addVehicle(vehicle);
     }
+    router.push('/my-inquiry');
   };
 
   return (
@@ -64,8 +65,11 @@ export const VehiclesPreview: React.FC = () => {
                 key={vehicle.id}
                 className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
               >
-                {/* Image */}
-                <div className="relative h-48 w-full overflow-hidden bg-stone-100">
+                {/* Image (Clickable - redirects to vehicle spec page) */}
+                <Link
+                  href={`/vehicles/${vehicle.slug}`}
+                  className="block relative h-48 w-full overflow-hidden bg-stone-100 cursor-pointer"
+                >
                   <Image
                     src={vehicle.featured_image}
                     alt={vehicle.name}
@@ -78,13 +82,13 @@ export const VehiclesPreview: React.FC = () => {
                       {vehicle.category_name}
                     </span>
                   </div>
-                </div>
+                </Link>
 
                 {/* Body */}
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-serif text-lg font-bold text-stone-900 mb-1 line-clamp-1 group-hover:text-primary-700 transition-colors">
-                      {vehicle.name}
+                      <Link href={`/vehicles/${vehicle.slug}`}>{vehicle.name}</Link>
                     </h3>
                     <p className="text-xs text-stone-500 line-clamp-2 mb-4 leading-relaxed">
                       {vehicle.description}
@@ -126,9 +130,10 @@ export const VehiclesPreview: React.FC = () => {
                   <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
                     <Link
                       href={`/vehicles/${vehicle.slug}`}
-                      className="text-xs font-semibold text-stone-600 hover:text-stone-900"
+                      className="px-2 py-1.5 rounded-lg text-xs font-semibold tracking-wider text-primary-900 bg-amber-50 hover:bg-primary-600 hover:text-white border border-primary-300 hover:border-transparent transition-all duration-200 flex items-center gap-1 shadow-sm group whitespace-nowrap"
                     >
-                      Vehicle Specs &rarr;
+                      <span>View Specs</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-primary-600 group-hover:text-white transition-transform duration-200 group-hover:translate-x-0.5" />
                     </Link>
 
                     <button
@@ -143,7 +148,7 @@ export const VehiclesPreview: React.FC = () => {
                       {isSelected ? (
                         <>
                           <Check className="w-3.5 h-3.5" />
-                          <span>Selected</span>
+                          <span>View in Inquiry</span>
                         </>
                       ) : (
                         <>

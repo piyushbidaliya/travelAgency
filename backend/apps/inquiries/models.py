@@ -2,8 +2,6 @@ import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
 from apps.vehicles.models import Vehicle
-from apps.guides.models import Guide
-from apps.languages.models import Language
 
 User = get_user_model()
 
@@ -34,20 +32,21 @@ class Inquiry(models.Model):
     children_count = models.PositiveSmallIntegerField(default=0)
     pickup_location = models.CharField(max_length=200, blank=True, help_text="e.g. Delhi Airport / Hotel")
     dropoff_location = models.CharField(max_length=200, blank=True, help_text="e.g. Mumbai Airport")
+    travel_destinations = models.CharField(max_length=300, blank=True, help_text="Destinations and cities where the tourist plans to travel")
     preferred_region = models.CharField(max_length=100, blank=True)
     
     # Relational Service Selections
     vehicles = models.ManyToManyField(Vehicle, blank=True, through='InquiryVehicle')
-    guides = models.ManyToManyField(Guide, blank=True, through='InquiryGuide')
-    languages = models.ManyToManyField(Language, blank=True, through='InquiryLanguage')
     
     # Service Specifications
     preferred_vehicle_categories = models.JSONField(default=list, blank=True)
     vehicles_count_required = models.PositiveSmallIntegerField(default=1)
     special_transport_requirements = models.TextField(blank=True)
     
-    guide_specialization_requested = models.CharField(max_length=200, blank=True)
-    guide_proficiency_requested = models.CharField(max_length=50, blank=True)
+    # Optional Guide Request
+    needs_guide = models.BooleanField(default=False)
+    guide_locations = models.JSONField(default=list, blank=True, help_text="Locations where guide is requested")
+    guide_languages = models.CharField(max_length=200, blank=True, help_text="e.g. English, French, Spanish")
     
     # Financial & Notes
     travel_budget = models.CharField(max_length=100, blank=True)
@@ -82,21 +81,6 @@ class InquiryVehicle(models.Model):
 
     class Meta:
         unique_together = ('inquiry', 'vehicle')
-
-class InquiryGuide(models.Model):
-    inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
-    guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ('inquiry', 'guide')
-
-class InquiryLanguage(models.Model):
-    inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    preferred_proficiency = models.CharField(max_length=50, blank=True)
-
-    class Meta:
-        unique_together = ('inquiry', 'language')
 
 class InquiryNote(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, related_name='notes')

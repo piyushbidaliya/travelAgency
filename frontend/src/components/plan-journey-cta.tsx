@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { ClipboardList, MessageSquare, ArrowRight } from 'lucide-react';
+import { ClipboardList } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa6';
 
 export const PlanJourneyCTA: React.FC = () => {
   return (
@@ -24,7 +25,7 @@ export const PlanJourneyCTA: React.FC = () => {
         </h2>
 
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-stone-300 font-sans leading-relaxed mb-10">
-          Select your private chauffeured vehicles and licensed multilingual tour guides. Send one consolidated inquiry and let our team manage every detail with excellence.
+          Select your private chauffeured vehicles and travel dates. Send one consolidated inquiry and let our concierge team manage every detail with excellence.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -33,7 +34,7 @@ export const PlanJourneyCTA: React.FC = () => {
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 hover:from-primary-600 hover:to-primary-800 text-white font-semibold text-xs tracking-wider uppercase shadow-gold-glow flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
           >
             <ClipboardList className="w-4 h-4" />
-            <span>Review Travel Inquiry</span>
+            <span>Plan & Enquire Now</span>
           </Link>
 
           <a
@@ -42,17 +43,9 @@ export const PlanJourneyCTA: React.FC = () => {
             rel="noopener noreferrer"
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all"
           >
-            <MessageSquare className="w-4 h-4" />
+            <FaWhatsapp className="w-4 h-4" />
             <span>Chat via WhatsApp</span>
           </a>
-
-          <Link
-            href="/contact"
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all"
-          >
-            <span>General Inquiry Form</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
       </div>
     </section>

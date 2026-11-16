@@ -1,26 +1,21 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Vehicle, Guide, Language, InquiryPlanState } from './types';
+import { Vehicle, InquiryPlanState } from './types';
 
 interface InquiryContextType {
   inquiry: InquiryPlanState;
   addVehicle: (vehicle: Vehicle) => void;
   removeVehicle: (id: number) => void;
-  addGuide: (guide: Guide) => void;
-  removeGuide: (id: number) => void;
-  toggleLanguage: (language: Language) => void;
-  removeLanguage: (id: number) => void;
   updateInquiryDetails: (details: Partial<InquiryPlanState>) => void;
   clearInquiry: () => void;
   totalSelectedCount: number;
   generateWhatsAppLink: (whatsappNumber?: string) => string;
+  generateEmailLink: (recipientEmail?: string) => string;
 }
 
 const DEFAULT_INQUIRY: InquiryPlanState = {
   vehicles: [],
-  guides: [],
-  preferredLanguages: [],
   startDate: '',
   endDate: '',
   flexibleDates: false,
@@ -28,6 +23,7 @@ const DEFAULT_INQUIRY: InquiryPlanState = {
   childrenCount: 0,
   pickupLocation: '',
   dropoffLocation: '',
+  travelDestinations: '',
   preferredVehicleCategory: '',
   vehiclesCountRequired: 1,
   specialRequirements: '',
@@ -38,14 +34,11 @@ const InquiryContext = createContext<InquiryContextType>({
   inquiry: DEFAULT_INQUIRY,
   addVehicle: () => {},
   removeVehicle: () => {},
-  addGuide: () => {},
-  removeGuide: () => {},
-  toggleLanguage: () => {},
-  removeLanguage: () => {},
   updateInquiryDetails: () => {},
   clearInquiry: () => {},
   totalSelectedCount: 0,
   generateWhatsAppLink: () => '',
+  generateEmailLink: () => '',
 });
 
 export const InquiryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -62,8 +55,6 @@ export const InquiryProvider: React.FC<{ children: React.ReactNode }> = ({ child
           ...DEFAULT_INQUIRY,
           ...parsed,
           vehicles: parsed.vehicles || [],
-          guides: parsed.guides || [],
-          preferredLanguages: parsed.preferredLanguages || [],
         });
       } catch {
         // ignore parse error
@@ -94,45 +85,6 @@ export const InquiryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   };
 
-  const addGuide = (guide: Guide) => {
-    setInquiry((prev) => {
-      if (prev.guides.some((g) => g.id === guide.id)) {
-        return prev;
-      }
-      return { ...prev, guides: [...prev.guides, guide] };
-    });
-  };
-
-  const removeGuide = (id: number) => {
-    setInquiry((prev) => ({
-      ...prev,
-      guides: prev.guides.filter((g) => g.id !== id),
-    }));
-  };
-
-  const toggleLanguage = (language: Language) => {
-    setInquiry((prev) => {
-      const exists = prev.preferredLanguages.some((l) => l.id === language.id);
-      if (exists) {
-        return {
-          ...prev,
-          preferredLanguages: prev.preferredLanguages.filter((l) => l.id !== language.id),
-        };
-      }
-      return {
-        ...prev,
-        preferredLanguages: [...prev.preferredLanguages, language],
-      };
-    });
-  };
-
-  const removeLanguage = (id: number) => {
-    setInquiry((prev) => ({
-      ...prev,
-      preferredLanguages: prev.preferredLanguages.filter((l) => l.id !== id),
-    }));
-  };
-
   const updateInquiryDetails = (details: Partial<InquiryPlanState>) => {
     setInquiry((prev) => ({ ...prev, ...details }));
   };
@@ -141,36 +93,16 @@ export const InquiryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setInquiry(DEFAULT_INQUIRY);
   };
 
-  const totalSelectedCount =
-    inquiry.vehicles.length +
-    inquiry.guides.length +
-    inquiry.preferredLanguages.length;
+  const totalSelectedCount = inquiry.vehicles.length;
 
   const generateWhatsAppLink = (whatsappNumber: string = '919876543210') => {
     const cleanNumber = whatsappNumber.replace(/\D/g, '');
-    let msg = 'Hello! I am inquiring about travel services across India.\n\n';
+    let msg = 'Hello! I am inquiring about chauffeured tourist vehicles in India.\n\n';
 
     if (inquiry.vehicles.length > 0) {
       msg += 'Selected Tourist Vehicles:\n';
       inquiry.vehicles.forEach((v) => {
         msg += `- ${v.name} (${v.category_name}).\n`;
-      });
-      msg += '\n';
-    }
-
-    if (inquiry.guides.length > 0) {
-      msg += 'Selected Licensed Tour Guides:\n';
-      inquiry.guides.forEach((g) => {
-        const langs = g.languages?.map((l) => l.language_name).join(', ') || '';
-        msg += `- ${g.full_name} (${g.category_name}${langs ? ` - ${langs}` : ''}).\n`;
-      });
-      msg += '\n';
-    }
-
-    if (inquiry.preferredLanguages.length > 0) {
-      msg += 'Preferred Guide Languages:\n';
-      inquiry.preferredLanguages.forEach((l) => {
-        msg += `- ${l.name}.\n`;
       });
       msg += '\n';
     }
@@ -186,6 +118,10 @@ export const InquiryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     msg += 'Travelers:\n';
     msg += `- ${inquiry.adultsCount} adults${inquiry.childrenCount > 0 ? `, ${inquiry.childrenCount} children` : ''}.\n\n`;
+
+    if (inquiry.travelDestinations) {
+      msg += `Destinations to visit:\n- ${inquiry.travelDestinations}.\n\n`;
+    }
 
     if (inquiry.pickupLocation) {
       msg += `Pickup location:\n- ${inquiry.pickupLocation}.\n\n`;
@@ -208,20 +144,69 @@ export const InquiryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(msg)}`;
   };
 
+  const generateEmailLink = (recipientEmail: string = 'concierge@namastejourneys.com') => {
+    const subject = inquiry.vehicles.length > 0
+      ? `Travel Inquiry: ${inquiry.vehicles.length} Vehicle(s) Selected - Namaste Journeys`
+      : 'Inquiry: India Private Chauffeured Travel Services';
+
+    let body = 'Hello Namaste Journeys Concierge Team,\n\nI would like to inquire about chauffeured tourist vehicles and travel services in India.\n\n';
+
+    if (inquiry.vehicles.length > 0) {
+      body += 'Selected Tourist Vehicles:\n';
+      inquiry.vehicles.forEach((v) => {
+        body += `- ${v.name} (${v.category_name})\n`;
+      });
+      body += '\n';
+    }
+
+    if (inquiry.startDate) {
+      body += 'Travel Dates:\n';
+      if (inquiry.endDate) {
+        body += `- ${inquiry.startDate} to ${inquiry.endDate}${inquiry.flexibleDates ? ' (Flexible)' : ''}\n\n`;
+      } else {
+        body += `- Starting ${inquiry.startDate}${inquiry.flexibleDates ? ' (Flexible)' : ''}\n\n`;
+      }
+    }
+
+    body += 'Travelers:\n';
+    body += `- ${inquiry.adultsCount} adults${inquiry.childrenCount > 0 ? `, ${inquiry.childrenCount} children` : ''}\n\n`;
+
+    if (inquiry.travelDestinations) {
+      body += `Destinations to Visit:\n- ${inquiry.travelDestinations}\n\n`;
+    }
+
+    if (inquiry.pickupLocation) {
+      body += `Pickup Location:\n- ${inquiry.pickupLocation}\n\n`;
+    }
+
+    if (inquiry.dropoffLocation) {
+      body += `Drop-off Location:\n- ${inquiry.dropoffLocation}\n\n`;
+    }
+
+    if (inquiry.specialRequirements) {
+      body += `Special Requirements:\n- ${inquiry.specialRequirements}\n\n`;
+    }
+
+    if (inquiry.customMessage) {
+      body += `Additional Notes:\n- ${inquiry.customMessage}\n\n`;
+    }
+
+    body += 'Please share vehicle availability, itinerary recommendations, and a transparent quotation.\n\nThank you!';
+
+    return `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
   return (
     <InquiryContext.Provider
       value={{
         inquiry,
         addVehicle,
         removeVehicle,
-        addGuide,
-        removeGuide,
-        toggleLanguage,
-        removeLanguage,
         updateInquiryDetails,
         clearInquiry,
         totalSelectedCount,
         generateWhatsAppLink,
+        generateEmailLink,
       }}
     >
       {children}

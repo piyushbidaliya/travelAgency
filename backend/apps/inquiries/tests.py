@@ -3,8 +3,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from apps.vehicles.models import VehicleCategory, Vehicle
-from apps.guides.models import GuideCategory, Guide
-from apps.languages.models import Language
 from .models import Inquiry
 
 class InquiryTests(TestCase):
@@ -15,12 +13,6 @@ class InquiryTests(TestCase):
             name='Toyota Innova Crysta', slug='innova-crysta', brand='Toyota',
             category=self.veh_cat, seating_capacity=6, luggage_capacity=4, description='Comfort vehicle'
         )
-        self.guide_cat = GuideCategory.objects.create(name='Heritage Guide', slug='heritage')
-        self.guide = Guide.objects.create(
-            full_name='Vikramaditya Sharma', slug='vikram-sharma', category=self.guide_cat,
-            short_intro='Historian', biography='Bio', years_of_experience=15
-        )
-        self.french = Language.objects.create(name='French', code='fr')
 
     def test_consolidated_inquiry_submission(self):
         url = reverse('inquiry-create')
@@ -34,10 +26,11 @@ class InquiryTests(TestCase):
             'children_count': 1,
             'pickup_location': 'Delhi Airport',
             'dropoff_location': 'Jaipur Hotel',
+            'travel_destinations': 'Delhi, Agra, Jaipur, Udaipur',
             'vehicle_ids': [self.vehicle.id],
-            'guide_ids': [self.guide.id],
-            'language_ids': [self.french.id],
-            'message': 'We require a French-speaking tour guide for our journey.'
+            'needs_guide': True,
+            'guide_locations': ['Delhi', 'Agra', 'Jaipur'],
+            'message': 'We require a chauffeured vehicle for our journey.'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -46,8 +39,32 @@ class InquiryTests(TestCase):
 
         inquiry = Inquiry.objects.get(reference_code=response.data['reference_code'])
         self.assertEqual(inquiry.vehicles.count(), 1)
-        self.assertEqual(inquiry.guides.count(), 1)
-        self.assertEqual(inquiry.languages.count(), 1)
+        self.assertTrue(inquiry.needs_guide)
+        self.assertEqual(inquiry.travel_destinations, 'Delhi, Agra, Jaipur, Udaipur')
+        self.assertEqual(inquiry.guide_locations, ['Delhi', 'Agra', 'Jaipur'])
+
+    def test_contact_submission_with_optional_guide(self):
+        url = reverse('inquiry-contact')
+        data = {
+            'fullName': 'Sarah Jenkins',
+            'email': 'sarah@example.com',
+            'phone': '+14155552671',
+            'country': 'United States',
+            'serviceInterest': 'vehicles_only',
+            'requestGuide': True,
+            'guideLocations': ['Delhi', 'Agra', 'Varanasi'],
+            'guideLanguages': 'English, French',
+            'message': 'Looking for private car and guide in selected historic cities.'
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.data['success'])
+
+        inquiry = Inquiry.objects.get(reference_code=response.data['reference_code'])
+        self.assertEqual(inquiry.full_name, 'Sarah Jenkins')
+        self.assertTrue(inquiry.needs_guide)
+        self.assertEqual(inquiry.guide_locations, ['Delhi', 'Agra', 'Varanasi'])
+        self.assertEqual(inquiry.guide_languages, 'English, French')
 
     def test_honeypot_spam_rejection(self):
         url = reverse('inquiry-create')

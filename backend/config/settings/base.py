@@ -33,8 +33,6 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'apps.website_settings',
     'apps.vehicles',
-    'apps.guides',
-    'apps.languages',
     'apps.inquiries',
     'apps.currency',
     'apps.testimonials',

@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = {
   title: 'About Us | Namaste Journeys - India Travel Services & Chauffeurs',
   description:
-    'Learn about Namaste Journeys. We provide international travelers with verified tourist vehicles, professional English-speaking chauffeurs, and licensed multilingual tour guides across India.',
+    'Learn about Namaste Journeys. We provide international travelers with verified tourist vehicles, professional English-speaking chauffeurs, and transparent travel planning across India.',
 };
 
 export default function AboutPage() {
@@ -32,7 +32,7 @@ export default function AboutPage() {
             Connecting International Voyagers with the Soul of India
           </h1>
           <p className="max-w-3xl mx-auto text-stone-300 text-sm sm:text-base leading-relaxed font-light">
-            Founded to eliminate travel friction, uncertainty, and linguistic barriers, Namaste Journeys empowers international guests to explore the vast cultural expanse of India with elegance, safety, and authentic local scholarship.
+            Founded to eliminate travel friction, uncertainty, and route hassles, Namaste Journeys empowers international guests to explore the vast cultural expanse of India with elegance, safety, and authentic local comfort.
           </p>
         </div>
       </section>
@@ -58,10 +58,10 @@ export default function AboutPage() {
               <Award className="w-6 h-6" />
             </div>
             <h3 className="font-serif text-xl font-bold text-stone-900">
-              Licensed Multilingual Scholars
+              Verified Interstate Permits & Safety
             </h3>
             <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-              No hurried scripts or commission-driven shopping stops. Our guides carry official Ministry of Tourism licenses, university historical degrees, and fluency in French, German, Spanish, Japanese, and English.
+              Every vehicle carries all-India tourist commercial permits, comprehensive passenger insurance, and rigorous periodic mechanical safety inspections to ensure complete peace of mind.
             </p>
           </div>
 
@@ -129,14 +129,14 @@ export default function AboutPage() {
             Ready to Plan Your Indian Journey?
           </h2>
           <p className="max-w-xl mx-auto text-stone-300 text-sm">
-            Browse our destinations, select your private tourist vehicle, and choose certified tour guides in your preferred language.
+            Browse our tourist fleet, select your private vehicle, and submit your journey details for a prompt quotation.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="/destinations"
+              href="/vehicles"
               className="px-6 py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-xs uppercase tracking-wider transition-colors"
             >
-              Explore Destinations
+              Explore Tourist Vehicles
             </Link>
             <Link
               href="/my-inquiry"
